@@ -1,7 +1,5 @@
 import { toast } from "react-toastify";
 import React from "react";
-import { createCompany, deleteCompany, getCompanies, getCompanyById, updateCompany } from "@/services/mockData/deals.json";
-import { createCompany, deleteCompany, getCompanies, getCompanyById, updateCompany } from "@/services/mockData/contacts.json";
 
 // Initialize ApperClient
 const getApperClient = () => {
