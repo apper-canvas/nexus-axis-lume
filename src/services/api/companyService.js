@@ -1,4 +1,7 @@
-import { toast } from 'react-toastify';
+import { toast } from "react-toastify";
+import React from "react";
+import { createCompany, deleteCompany, getCompanies, getCompanyById, updateCompany } from "@/services/mockData/deals.json";
+import { createCompany, deleteCompany, getCompanies, getCompanyById, updateCompany } from "@/services/mockData/contacts.json";
 
 // Initialize ApperClient
 const getApperClient = () => {
@@ -47,15 +50,43 @@ export const getCompanies = async (searchTerm = '') => {
       return [];
     }
     
-    return response.data.map(company => ({
-      Id: company.Id,
-      name: company.name_c || company.Name || '',
-      industry: company.industry_c?.Name || '',
-      industryId: company.industry_c?.Id || null,
-      website: company.website_c || '',
-      address: company.address_c || '',
-      notes: company.notes_c || ''
-    }));
+// Get additional relationship data
+    const [allContacts, allDeals] = await Promise.all([
+      getApperClient().fetchRecords('contact_c', {
+        fields: [{"field": {"Name": "Id"}}, {"field": {"Name": "company_c"}}]
+      }),
+      getApperClient().fetchRecords('deal_c', {
+        fields: [{"field": {"Name": "Id"}}, {"field": {"Name": "contact_c"}}]
+      })
+    ]);
+
+    const contacts = allContacts.success ? allContacts.data : [];
+    const deals = allDeals.success ? allDeals.data : [];
+
+    return response.data.map(company => {
+      // Count contacts for this company
+      const companyContacts = contacts.filter(contact => 
+        contact.company_c?.Id === company.Id
+      );
+      
+      // Count deals through contacts for this company
+      const contactIds = companyContacts.map(contact => contact.Id);
+      const companyDeals = deals.filter(deal => 
+        deal.contact_c?.Id && contactIds.includes(deal.contact_c.Id)
+      );
+
+      return {
+        Id: company.Id,
+        name: company.name_c || company.Name || '',
+        industry: company.industry_c?.Name || '',
+        industryId: company.industry_c?.Id || null,
+        website: company.website_c || '',
+        address: company.address_c || '',
+        notes: company.notes_c || '',
+        contactCount: companyContacts.length,
+        dealCount: companyDeals.length
+      };
+    });
   } catch (error) {
     console.error("Error fetching companies:", error?.response?.data?.message || error);
     return [];
@@ -85,6 +116,26 @@ export const getCompanyById = async (id) => {
     }
     
     const company = response.data;
+// Get relationship counts for this specific company
+    const [contactsResponse, dealsResponse] = await Promise.all([
+      getApperClient().fetchRecords('contact_c', {
+        fields: [{"field": {"Name": "Id"}}],
+        where: [{"FieldName": "company_c", "Operator": "EqualTo", "Values": [parseInt(id)]}]
+      }),
+      getApperClient().fetchRecords('deal_c', {
+        fields: [{"field": {"Name": "Id"}}, {"field": {"Name": "contact_c"}}]
+      })
+    ]);
+
+    const contacts = contactsResponse.success ? contactsResponse.data : [];
+    const allDeals = dealsResponse.success ? dealsResponse.data : [];
+    
+    // Count deals through contacts
+    const contactIds = contacts.map(contact => contact.Id);
+    const deals = allDeals.filter(deal => 
+      deal.contact_c?.Id && contactIds.includes(deal.contact_c.Id)
+    );
+
     return {
       Id: company.Id,
       name: company.name_c || company.Name || '',
@@ -92,7 +143,9 @@ export const getCompanyById = async (id) => {
       industryId: company.industry_c?.Id || null,
       website: company.website_c || '',
       address: company.address_c || '',
-      notes: company.notes_c || ''
+      notes: company.notes_c || '',
+      contactCount: contacts.length,
+      dealCount: deals.length
     };
   } catch (error) {
     console.error(`Error fetching company ${id}:`, error?.response?.data?.message || error);

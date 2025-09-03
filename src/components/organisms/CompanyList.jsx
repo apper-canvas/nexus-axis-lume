@@ -191,16 +191,16 @@ const CompanyList = ({
                       <div className="text-sm text-gray-900 line-clamp-2">
                         {company.address || 'No address'}
                       </div>
-                    </td>
+</td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center space-x-4 text-sm text-gray-500">
                         <div className="flex items-center">
                           <ApperIcon name="TrendingUp" size={14} className="mr-1" />
-                          <span>0 deals</span>
+                          <span>{company.dealCount || 0} deals</span>
                         </div>
                         <div className="flex items-center">
                           <ApperIcon name="Users" size={14} className="mr-1" />
-                          <span>0 contacts</span>
+                          <span>{company.contactCount || 0} contacts</span>
                         </div>
                       </div>
                     </td>

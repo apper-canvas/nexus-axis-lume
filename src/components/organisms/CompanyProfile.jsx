@@ -45,25 +45,24 @@ const CompanyProfile = () => {
       setCompany(companyData);
 
       // Load related data
-      const [allDeals, allContacts] = await Promise.all([
+const [allDeals, allContacts] = await Promise.all([
         getDeals(),
         getContacts()
       ]);
 
       // Filter deals and contacts for this company
-      const companyDeals = allDeals.filter(deal => 
-        deal.contactId && allContacts.some(contact => 
-          contact.Id === deal.contactId && contact.companyId === parseInt(id)
-        )
-      );
-      
       const companyContacts = allContacts.filter(contact => 
         contact.companyId === parseInt(id)
+      );
+      
+      const companyDeals = allDeals.filter(deal => 
+        deal.contactId && companyContacts.some(contact => 
+          contact.Id === deal.contactId
+        )
       );
 
       setDeals(companyDeals);
       setContacts(companyContacts);
-      
     } catch (err) {
       setError('Failed to load company data');
       console.error('Error loading company data:', err);
@@ -205,12 +204,19 @@ const CompanyProfile = () => {
             <div>
               <label className="text-sm font-medium text-gray-500 block mb-1">Address</label>
               <p className="text-gray-900">{company.address}</p>
-            </div>
+</div>
           )}
 
           <div>
             <label className="text-sm font-medium text-gray-500 block mb-1">Contacts</label>
             <p className="text-2xl font-bold text-gray-900">{contacts.length}</p>
+          </div>
+
+          <div>
+            <label className="text-sm font-medium text-gray-500 block mb-1">Account Value</label>
+            <p className="text-2xl font-bold text-success-600">
+              {formatCurrency(deals.reduce((sum, deal) => sum + (deal.amount || 0), 0))}
+            </p>
           </div>
         </div>
 

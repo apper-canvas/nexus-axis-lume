@@ -8,6 +8,7 @@ import Header from "@/components/organisms/Header";
 import ContactsPage from "@/components/pages/ContactsPage";
 import DealsPage from "@/components/pages/DealsPage";
 import CompaniesPage from "@/components/pages/CompaniesPage";
+import CompanyProfile from "@/components/organisms/CompanyProfile";
 import AnalyticsPage from "@/components/pages/AnalyticsPage";
 import SettingsPage from "@/components/pages/SettingsPage";
 import Login from '@/components/pages/Login';
@@ -151,8 +152,9 @@ function AppContent() {
                   <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <Routes>
                       <Route path="/" element={<ContactsPage />} />
-                      <Route path="/deals" element={<DealsPage />} />
+<Route path="/deals" element={<DealsPage />} />
                       <Route path="/companies" element={<CompaniesPage />} />
+                      <Route path="/companies/:id" element={<CompanyProfile />} />
                       <Route path="/analytics" element={<AnalyticsPage />} />
                       <Route path="/settings" element={<SettingsPage />} />
                     </Routes>
