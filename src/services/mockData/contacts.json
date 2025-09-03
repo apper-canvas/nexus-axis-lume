@@ -1,0 +1,122 @@
+[
+  {
+    "Id": 1,
+    "firstName": "Sarah",
+    "lastName": "Johnson",
+    "email": "sarah.johnson@techcorp.com",
+    "phone": "+1 (555) 123-4567",
+    "company": "TechCorp Solutions",
+    "status": "customer",
+    "createdAt": "2024-01-15T08:30:00Z",
+    "updatedAt": "2024-01-15T08:30:00Z",
+    "notes": "Key decision maker for enterprise software solutions. Prefers email communication."
+  },
+  {
+    "Id": 2,
+    "firstName": "Michael",
+    "lastName": "Chen",
+    "email": "m.chen@innovatetech.io",
+    "phone": "+1 (555) 234-5678",
+    "company": "InnovateTech",
+    "status": "prospect",
+    "createdAt": "2024-01-20T14:15:00Z",
+    "updatedAt": "2024-01-20T14:15:00Z",
+    "notes": "Interested in our premium package. Follow up scheduled for next week."
+  },
+  {
+    "Id": 3,
+    "firstName": "Emily",
+    "lastName": "Rodriguez",
+    "email": "emily.r@globalventures.com",
+    "phone": "+1 (555) 345-6789",
+    "company": "Global Ventures Ltd",
+    "status": "lead",
+    "createdAt": "2024-01-25T10:45:00Z",
+    "updatedAt": "2024-01-25T10:45:00Z",
+    "notes": "Downloaded our whitepaper. Potential fit for our enterprise solution."
+  },
+  {
+    "Id": 4,
+    "firstName": "David",
+    "lastName": "Thompson",
+    "email": "david@startuplab.co",
+    "phone": "+1 (555) 456-7890",
+    "company": "StartupLab",
+    "status": "customer",
+    "createdAt": "2024-01-28T16:20:00Z",
+    "updatedAt": "2024-01-28T16:20:00Z",
+    "notes": "Long-term client. Very satisfied with our services. Great reference for new prospects."
+  },
+  {
+    "Id": 5,
+    "firstName": "Lisa",
+    "lastName": "Wang",
+    "email": "lisa.wang@cloudtech.net",
+    "phone": "+1 (555) 567-8901",
+    "company": "CloudTech Systems",
+    "status": "prospect",
+    "createdAt": "2024-02-01T09:10:00Z",
+    "updatedAt": "2024-02-01T09:10:00Z",
+    "notes": "Evaluating multiple vendors. Price-sensitive but values quality. Follow up in two weeks."
+  },
+  {
+    "Id": 6,
+    "firstName": "James",
+    "lastName": "Wilson",
+    "email": "j.wilson@financefirm.com",
+    "phone": "+1 (555) 678-9012",
+    "company": "FinanceFirm Pro",
+    "status": "lead",
+    "createdAt": "2024-02-05T13:30:00Z",
+    "updatedAt": "2024-02-05T13:30:00Z",
+    "notes": "Attended our webinar. Works in financial services, potential high-value client."
+  },
+  {
+    "Id": 7,
+    "firstName": "Maria",
+    "lastName": "Garcia",
+    "email": "maria@retailplus.com",
+    "phone": "+1 (555) 789-0123",
+    "company": "RetailPlus Inc",
+    "status": "customer",
+    "createdAt": "2024-02-08T11:45:00Z",
+    "updatedAt": "2024-02-08T11:45:00Z",
+    "notes": "Retail industry expert. Happy with our service and open to upselling opportunities."
+  },
+  {
+    "Id": 8,
+    "firstName": "Robert",
+    "lastName": "Brown",
+    "email": "rob.brown@mediahouse.tv",
+    "phone": "+1 (555) 890-1234",
+    "company": "MediaHouse TV",
+    "status": "prospect",
+    "createdAt": "2024-02-10T15:20:00Z",
+    "updatedAt": "2024-02-10T15:20:00Z",
+    "notes": "Media company looking for scalable solutions. Budget approved, waiting for final decision."
+  },
+  {
+    "Id": 9,
+    "firstName": "Amanda",
+    "lastName": "Lee",
+    "email": "amanda@healthtech.org",
+    "phone": "+1 (555) 901-2345",
+    "company": "HealthTech Solutions",
+    "status": "lead",
+    "createdAt": "2024-02-12T08:15:00Z",
+    "updatedAt": "2024-02-12T08:15:00Z",
+    "notes": "Healthcare sector contact. Compliance requirements are critical. Needs detailed security info."
+  },
+  {
+    "Id": 10,
+    "firstName": "Kevin",
+    "lastName": "Martinez",
+    "email": "k.martinez@edutech.edu",
+    "phone": "+1 (555) 012-3456",
+    "company": "EduTech Institute",
+    "status": "prospect",
+    "createdAt": "2024-02-15T12:00:00Z",
+    "updatedAt": "2024-02-15T12:00:00Z",
+    "notes": "Education technology buyer. Budget cycle ends in March. Good timing for proposal."
+  }
+]
