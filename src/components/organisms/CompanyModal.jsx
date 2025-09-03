@@ -111,18 +111,15 @@ const CompanyModal = ({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Company Name */}
             <div className="md:col-span-2">
-              <FormField
+<FormField
                 label="Company Name"
                 error={errors.name}
                 required
-              >
-                <Input
-                  value={formData.name}
-                  onChange={(e) => handleChange('name', e.target.value)}
-                  placeholder="Enter company name"
-                  className={errors.name ? 'border-error-500' : ''}
-                />
-              </FormField>
+                value={formData.name}
+                onChange={(e) => handleChange('name', e.target.value)}
+                placeholder="Enter company name"
+                className={errors.name ? 'border-error-500' : ''}
+              />
             </div>
 
             {/* Industry */}
@@ -148,17 +145,14 @@ const CompanyModal = ({
             </FormField>
 
             {/* Website */}
-            <FormField
+<FormField
               label="Website"
               error={errors.website}
-            >
-              <Input
-                value={formData.website}
-                onChange={(e) => handleChange('website', e.target.value)}
-                placeholder="https://example.com"
-                className={errors.website ? 'border-error-500' : ''}
-              />
-            </FormField>
+              value={formData.website}
+              onChange={(e) => handleChange('website', e.target.value)}
+              placeholder="https://example.com"
+              className={errors.website ? 'border-error-500' : ''}
+            />
           </div>
 
           {/* Address */}

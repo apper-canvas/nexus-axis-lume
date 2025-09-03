@@ -8,6 +8,7 @@ const FormField = ({
   error, 
   required = false,
   className,
+  children,
   ...inputProps 
 }) => {
   return (
@@ -16,7 +17,7 @@ const FormField = ({
         {label}
         {required && <span className="text-error-500 ml-1">*</span>}
       </Label>
-      <Input error={error} {...inputProps} />
+      {children || <Input error={error} {...inputProps} />}
       {error && (
         <p className="text-sm text-error-500">{error}</p>
       )}
