@@ -7,6 +7,7 @@ import Sidebar from "@/components/organisms/Sidebar";
 import Header from "@/components/organisms/Header";
 import ContactsPage from "@/components/pages/ContactsPage";
 import DealsPage from "@/components/pages/DealsPage";
+import TasksPage from "@/components/pages/TasksPage";
 import CompaniesPage from "@/components/pages/CompaniesPage";
 import CompanyProfile from "@/components/organisms/CompanyProfile";
 import AnalyticsPage from "@/components/pages/AnalyticsPage";
@@ -17,7 +18,6 @@ import Callback from '@/components/pages/Callback';
 import ErrorPage from '@/components/pages/ErrorPage';
 import ResetPassword from '@/components/pages/ResetPassword';
 import PromptPassword from '@/components/pages/PromptPassword';
-
 // Create auth context
 export const AuthContext = createContext(null);
 
@@ -151,8 +151,9 @@ function AppContent() {
                 <main className="py-6">
                   <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <Routes>
-                      <Route path="/" element={<ContactsPage />} />
-<Route path="/deals" element={<DealsPage />} />
+<Route path="/" element={<ContactsPage />} />
+                      <Route path="/deals" element={<DealsPage />} />
+                      <Route path="/tasks" element={<TasksPage />} />
                       <Route path="/companies" element={<CompaniesPage />} />
                       <Route path="/companies/:id" element={<CompanyProfile />} />
                       <Route path="/analytics" element={<AnalyticsPage />} />

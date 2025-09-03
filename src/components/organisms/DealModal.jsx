@@ -3,6 +3,8 @@ import ApperIcon from "@/components/ApperIcon";
 import Button from "@/components/atoms/Button";
 import FormField from "@/components/molecules/FormField";
 import { createDeal, updateDeal } from "@/services/api/dealService";
+import { createFollowUpReminder } from "@/services/api/followUpReminderService";
+import { createTask } from "@/services/api/taskService";
 import { cn } from "@/utils/cn";
 
 const PIPELINE_STAGES = [
@@ -24,6 +26,13 @@ const DealModal = ({ isOpen, onClose, deal, contacts, onSave }) => {
     description: ""
   });
 
+  const [reminderData, setReminderData] = useState({
+    enabled: false,
+    date: "",
+    type: "Call",
+    notes: ""
+  });
+
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -36,7 +45,13 @@ const DealModal = ({ isOpen, onClose, deal, contacts, onSave }) => {
         expectedCloseDate: deal.expectedCloseDate ? deal.expectedCloseDate.split('T')[0] : "",
         stage: deal.stage || "Lead",
         probability: deal.probability || 25,
-        description: deal.description || ""
+description: deal.description || ""
+      });
+      setReminderData({
+        enabled: false,
+        date: "",
+        type: "Call",
+        notes: ""
       });
     } else {
       setFormData({
@@ -47,6 +62,12 @@ const DealModal = ({ isOpen, onClose, deal, contacts, onSave }) => {
         stage: "Lead",
         probability: 25,
         description: ""
+      });
+      setReminderData({
+        enabled: false,
+        date: "",
+        type: "Call",
+        notes: ""
       });
     }
     setErrors({});
@@ -84,7 +105,7 @@ const DealModal = ({ isOpen, onClose, deal, contacts, onSave }) => {
 
     setIsSubmitting(true);
     
-    try {
+try {
       const selectedContact = contacts.find(c => c.Id === parseInt(formData.contactId));
       const dealData = {
         ...formData,
@@ -94,10 +115,37 @@ const DealModal = ({ isOpen, onClose, deal, contacts, onSave }) => {
         probability: parseInt(formData.probability)
       };
 
+      let savedDeal;
       if (deal) {
-        await updateDeal(deal.Id, dealData);
+        savedDeal = await updateDeal(deal.Id, dealData);
       } else {
-        await createDeal(dealData);
+        savedDeal = await createDeal(dealData);
+      }
+
+      // Create reminder and task if enabled
+      if (reminderData.enabled && reminderData.date && savedDeal) {
+        try {
+          const reminder = await createFollowUpReminder({
+            name: `${reminderData.type} reminder for ${dealData.name}`,
+            reminderDate: reminderData.date,
+            associatedItemType: "Deal",
+            associatedItemId: savedDeal.Id,
+            reminderType: reminderData.type
+          });
+
+          if (reminder) {
+            await createTask({
+              taskName: `${reminderData.type}: ${dealData.name}`,
+              description: reminderData.notes || `Follow up on deal: ${dealData.name}`,
+              dueDate: reminderData.date,
+              status: "Not Started",
+              externalTaskId: `reminder_${reminder.Id}`
+            });
+          }
+        } catch (reminderError) {
+          console.error("Error creating reminder:", reminderError);
+          // Don't fail the whole operation if reminder creation fails
+        }
       }
 
       await onSave(dealData);
@@ -266,8 +314,66 @@ const DealModal = ({ isOpen, onClose, deal, contacts, onSave }) => {
               className="block w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 shadow-sm transition-all duration-200 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
               placeholder="Additional details about this deal..."
             />
-          </div>
+</div>
 
+          {/* Follow-up Reminder Section */}
+          <div className="space-y-4 pt-4 border-t border-gray-200">
+            <div className="flex items-center space-x-2">
+              <input
+                type="checkbox"
+                id="reminderEnabled"
+                checked={reminderData.enabled}
+                onChange={(e) => setReminderData(prev => ({ ...prev, enabled: e.target.checked }))}
+                className="rounded border-gray-300 text-primary-600 focus:ring-primary-500"
+              />
+              <label htmlFor="reminderEnabled" className="text-sm font-medium text-gray-700">
+                Set follow-up reminder
+              </label>
+            </div>
+
+            {reminderData.enabled && (
+              <div className="space-y-4 pl-6">
+                <div className="grid grid-cols-2 gap-4">
+                  <FormField
+                    label="Reminder Date"
+                    name="reminderDate"
+                    type="datetime-local"
+                    value={reminderData.date}
+                    onChange={(e) => setReminderData(prev => ({ ...prev, date: e.target.value }))}
+                    required={reminderData.enabled}
+                  />
+                  
+                  <div className="space-y-1">
+                    <label className="block text-sm font-medium text-gray-700">
+                      Reminder Type
+                    </label>
+                    <select
+                      value={reminderData.type}
+                      onChange={(e) => setReminderData(prev => ({ ...prev, type: e.target.value }))}
+                      className="block w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 shadow-sm transition-all duration-200 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
+                    >
+                      <option value="Call">Call</option>
+                      <option value="Email">Email</option>
+                      <option value="Meeting">Meeting</option>
+                    </select>
+                  </div>
+                </div>
+                
+                <div className="space-y-1">
+                  <label className="block text-sm font-medium text-gray-700">
+                    Reminder Notes
+                  </label>
+                  <textarea
+                    value={reminderData.notes}
+                    onChange={(e) => setReminderData(prev => ({ ...prev, notes: e.target.value }))}
+                    rows={2}
+                    className="block w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 shadow-sm transition-all duration-200 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
+                    placeholder="Additional notes for the follow-up..."
+                  />
+                </div>
+              </div>
+            )}
+          </div>
           <div className="flex items-center justify-end space-x-3 pt-4">
             <Button
               type="button"
