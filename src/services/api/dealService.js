@@ -317,7 +317,3 @@ export const deleteDeal = async (id) => {
     return false;
   }
 };
-
-export const updateDealStage = async (id, stage) => {
-  return await updateDeal(id, { stage });
-};
