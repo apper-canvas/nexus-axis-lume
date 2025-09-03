@@ -1,0 +1,192 @@
+[
+  {
+    "Id": 1,
+    "name": "Enterprise CRM Implementation",
+    "contactId": 1,
+    "contactName": "Sarah Johnson",
+    "value": 125000,
+    "expectedCloseDate": "2024-12-30",
+    "stage": "Lead",
+    "probability": 25,
+    "description": "Complete CRM system implementation for mid-size enterprise client including data migration, custom workflows, and staff training.",
+    "createdAt": "2024-11-15T10:30:00.000Z",
+    "updatedAt": "2024-11-20T14:22:00.000Z",
+    "history": [
+      {
+        "Id": 1,
+        "stage": "Lead",
+        "changedAt": "2024-11-15T10:30:00.000Z",
+        "changedBy": "System",
+        "notes": "Deal created"
+      }
+    ]
+  },
+  {
+    "Id": 2,
+    "name": "Marketing Automation Platform",
+    "contactId": 3,
+    "contactName": "David Chen",
+    "value": 75000,
+    "expectedCloseDate": "2024-12-15",
+    "stage": "Qualified",
+    "probability": 45,
+    "description": "Marketing automation solution with email campaigns, lead scoring, and analytics integration.",
+    "createdAt": "11/10/2024 9:15:00 AMZ",
+    "updatedAt": "2024-11-18T16:45:00.000Z",
+    "history": [
+      {
+        "Id": 1,
+        "stage": "Lead",
+        "changedAt": "2024-11-10T09:15:00.000Z",
+        "changedBy": "System",
+        "notes": "Deal created"
+      },
+      {
+        "Id": 2,
+        "stage": "Qualified",
+        "previousStage": "Lead",
+        "changedAt": "2024-11-18T16:45:00.000Z",
+        "changedBy": "User",
+        "notes": "Deal moved from Lead to Qualified"
+      }
+    ]
+  },
+  {
+    "Id": 3,
+    "name": "E-commerce Platform Upgrade",
+    "contactId": 5,
+    "contactName": "Lisa Wang",
+    "value": 95000,
+    "expectedCloseDate": "2024-12-20",
+    "stage": "Proposal",
+    "probability": 65,
+    "description": "Complete e-commerce platform modernization including mobile optimization, payment gateway integration, and inventory management.",
+    "createdAt": "2024-11-05T14:20:00.000Z",
+    "updatedAt": "2024-11-22T11:30:00.000Z",
+    "history": [
+      {
+        "Id": 1,
+        "stage": "Lead",
+        "changedAt": "2024-11-05T14:20:00.000Z",
+        "changedBy": "System",
+        "notes": "Deal created"
+      },
+      {
+        "Id": 2,
+        "stage": "Qualified",
+        "previousStage": "Lead",
+        "changedAt": "2024-11-12T10:15:00.000Z",
+        "changedBy": "User",
+        "notes": "Deal moved from Lead to Qualified"
+      },
+      {
+        "Id": 3,
+        "stage": "Proposal",
+        "previousStage": "Qualified",
+        "changedAt": "2024-11-22T11:30:00.000Z",
+        "changedBy": "User",
+        "notes": "Deal moved from Qualified to Proposal"
+      }
+    ]
+  },
+  {
+    "Id": 4,
+    "name": "Cloud Migration Services",
+    "contactId": 2,
+    "contactName": "Michael Rodriguez",
+    "value": 180000,
+    "expectedCloseDate": "2024-12-28",
+    "stage": "Negotiation",
+    "probability": 80,
+    "description": "Complete cloud infrastructure migration with security hardening, backup solutions, and 24/7 monitoring.",
+    "createdAt": "2024-10-28T08:45:00.000Z",
+    "updatedAt": "11/25/2024 1:15:00 PMZ",
+    "history": [
+      {
+        "Id": 1,
+        "stage": "Lead",
+        "changedAt": "2024-10-28T08:45:00.000Z",
+        "changedBy": "System",
+        "notes": "Deal created"
+      },
+      {
+        "Id": 2,
+        "stage": "Qualified",
+        "previousStage": "Lead",
+        "changedAt": "2024-11-08T14:20:00.000Z",
+        "changedBy": "User",
+        "notes": "Deal moved from Lead to Qualified"
+      },
+      {
+        "Id": 3,
+        "stage": "Proposal",
+        "previousStage": "Qualified",
+        "changedAt": "2024-11-18T09:30:00.000Z",
+        "changedBy": "User",
+        "notes": "Deal moved from Qualified to Proposal"
+      },
+      {
+        "Id": 4,
+        "stage": "Negotiation",
+        "previousStage": "Proposal",
+        "changedAt": "2024-11-25T13:15:00.000Z",
+        "changedBy": "User",
+        "notes": "Deal moved from Proposal to Negotiation"
+      }
+    ]
+  },
+  {
+    "Id": 5,
+    "name": "Digital Transformation Consulting",
+    "contactId": 4,
+    "contactName": "Jennifer Brown",
+    "value": 65000,
+    "expectedCloseDate": "2024-11-30",
+    "stage": "Closed",
+    "probability": 100,
+    "description": "Strategic consulting for digital transformation roadmap including technology assessment and implementation planning.",
+    "createdAt": "2024-10-15T12:00:00.000Z",
+    "updatedAt": "2024-11-28T15:45:00.000Z",
+    "history": [
+      {
+        "Id": 1,
+        "stage": "Lead",
+        "changedAt": "2024-10-15T12:00:00.000Z",
+        "changedBy": "System",
+        "notes": "Deal created"
+      },
+      {
+        "Id": 2,
+        "stage": "Qualified",
+        "previousStage": "Lead",
+        "changedAt": "2024-10-22T10:30:00.000Z",
+        "changedBy": "User",
+        "notes": "Deal moved from Lead to Qualified"
+      },
+      {
+        "Id": 3,
+        "stage": "Proposal",
+        "previousStage": "Qualified",
+        "changedAt": "2024-11-05T14:15:00.000Z",
+        "changedBy": "User",
+        "notes": "Deal moved from Qualified to Proposal"
+      },
+      {
+        "Id": 4,
+        "stage": "Negotiation",
+        "previousStage": "Proposal",
+        "changedAt": "2024-11-20T16:20:00.000Z",
+        "changedBy": "User",
+        "notes": "Deal moved from Proposal to Negotiation"
+      },
+      {
+        "Id": 5,
+        "stage": "Closed",
+        "previousStage": "Negotiation",
+        "changedAt": "2024-11-28T15:45:00.000Z",
+        "changedBy": "User",
+        "notes": "Deal moved from Negotiation to Closed"
+      }
+    ]
+  }
+]
