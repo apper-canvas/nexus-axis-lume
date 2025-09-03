@@ -6,9 +6,10 @@ import Loading from "@/components/ui/Loading";
 import Error from "@/components/ui/Error";
 import Empty from "@/components/ui/Empty";
 import { getContacts, createContact, updateContact, deleteContact } from "@/services/api/contactService";
-
+const [companies, setCompanies] = useState([]);
 const ContactsPage = () => {
-  const [contacts, setContacts] = useState([]);
+const [contacts, setContacts] = useState([]);
+  const [companiesLoading, setCompaniesLoading] = useState(true);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -17,7 +18,8 @@ const ContactsPage = () => {
   const loadContacts = async () => {
     try {
       setLoading(true);
-      setError("");
+setError("");
+      await loadCompanies();
       const data = await getContacts();
       setContacts(data);
     } catch (err) {
@@ -28,8 +30,23 @@ const ContactsPage = () => {
     }
   };
 
+const loadCompanies = async () => {
+    try {
+      setCompaniesLoading(true);
+      const { getCompanies } = await import('@/services/api/companyService');
+      const companiesData = await getCompanies();
+      setCompanies(companiesData);
+    } catch (error) {
+      console.error("Error loading companies:", error);
+      toast.error("Failed to load companies");
+    } finally {
+      setCompaniesLoading(false);
+    }
+  };
+
   useEffect(() => {
     loadContacts();
+    loadCompanies();
   }, []);
 
   const handleAddContact = () => {
@@ -109,11 +126,12 @@ const ContactsPage = () => {
         onDeleteContact={handleDeleteContact}
       />
       
-      <ContactModal
+<ContactModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         contact={selectedContact}
         onSave={handleSaveContact}
+        companies={companies}
       />
     </>
   );

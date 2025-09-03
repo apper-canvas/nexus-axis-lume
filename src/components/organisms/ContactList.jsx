@@ -27,7 +27,7 @@ const ContactList = ({
         contact.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
         contact.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
         contact.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        contact.company.toLowerCase().includes(searchTerm.toLowerCase())
+(contact.company || '').toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
 
@@ -51,7 +51,7 @@ const ContactList = ({
           break;
         case "company":
           aValue = a.company.toLowerCase();
-          bValue = b.company.toLowerCase();
+bValue = (b.company || '').toLowerCase();
           break;
         case "created":
           aValue = new Date(a.createdAt);
@@ -198,7 +198,7 @@ const ContactList = ({
                     <div className="text-sm text-gray-900">{contact.phone}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-900">{contact.company}</div>
+<div className="text-sm text-gray-900">{contact.company || 'No Company'}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <Badge variant={getStatusVariant(contact.status)}>

@@ -4,13 +4,13 @@ import Button from "@/components/atoms/Button";
 import FormField from "@/components/molecules/FormField";
 import { cn } from "@/utils/cn";
 
-const ContactModal = ({ isOpen, onClose, contact, onSave }) => {
+const ContactModal = ({ isOpen, onClose, contact, onSave, companies = [] }) => {
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
     email: "",
     phone: "",
-    company: "",
+companyId: "",
     status: "lead",
     notes: ""
   });
@@ -23,9 +23,9 @@ const ContactModal = ({ isOpen, onClose, contact, onSave }) => {
       setFormData({
         firstName: contact.firstName || "",
         lastName: contact.lastName || "",
-        email: contact.email || "",
+email: contact.email || "",
         phone: contact.phone || "",
-        company: contact.company || "",
+        companyId: contact.companyId || "",
         status: contact.status || "lead",
         notes: contact.notes || ""
       });
@@ -35,7 +35,7 @@ const ContactModal = ({ isOpen, onClose, contact, onSave }) => {
         lastName: "",
         email: "",
         phone: "",
-        company: "",
+companyId: "",
         status: "lead",
         notes: ""
       });
@@ -64,10 +64,9 @@ const ContactModal = ({ isOpen, onClose, contact, onSave }) => {
       newErrors.phone = "Phone number is required";
     }
 
-    if (!formData.company.trim()) {
-      newErrors.company = "Company is required";
+if (!formData.companyId) {
+      newErrors.companyId = "Company is required";
     }
-
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -158,14 +157,32 @@ const ContactModal = ({ isOpen, onClose, contact, onSave }) => {
             required
           />
 
-          <FormField
-            label="Company"
-            name="company"
-            value={formData.company}
-            onChange={handleChange}
-            error={errors.company}
-            required
-          />
+<div className="space-y-1">
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Company <span className="text-red-500">*</span>
+            </label>
+            <select
+              name="companyId"
+              value={formData.companyId}
+              onChange={handleChange}
+              className={cn(
+                "block w-full rounded-lg border bg-white px-3 py-2 text-sm text-gray-900 shadow-sm transition-all duration-200 focus:outline-none focus:ring-2",
+                errors.companyId
+                  ? "border-red-300 focus:border-red-500 focus:ring-red-500/20"
+                  : "border-gray-300 focus:border-primary-500 focus:ring-primary-500/20"
+              )}
+            >
+              <option value="">Select a company...</option>
+              {companies.map(company => (
+                <option key={company.Id} value={company.Id}>
+                  {company.name} {company.industry && `(${company.industry})`}
+                </option>
+              ))}
+            </select>
+            {errors.companyId && (
+              <p className="text-sm text-red-600">{errors.companyId}</p>
+            )}
+          </div>
 
           <div className="space-y-1">
             <label className="block text-sm font-medium text-gray-700 mb-1">
