@@ -29,9 +29,9 @@
     "value": 75000,
     "expectedCloseDate": "2024-12-15",
     "stage": "Qualified",
-    "probability": 45,
+"probability": 45,
     "description": "Marketing automation solution with email campaigns, lead scoring, and analytics integration.",
-    "createdAt": "11/10/2024 9:15:00 AMZ",
+    "createdAt": "2024-11-10T09:15:00.000Z",
     "updatedAt": "2024-11-18T16:45:00.000Z",
     "history": [
       {
@@ -98,9 +98,9 @@
     "expectedCloseDate": "2024-12-28",
     "stage": "Negotiation",
     "probability": 80,
-    "description": "Complete cloud infrastructure migration with security hardening, backup solutions, and 24/7 monitoring.",
+"description": "Complete cloud infrastructure migration with security hardening, backup solutions, and 24/7 monitoring.",
     "createdAt": "2024-10-28T08:45:00.000Z",
-    "updatedAt": "11/25/2024 1:15:00 PMZ",
+    "updatedAt": "2024-11-25T13:15:00.000Z",
     "history": [
       {
         "Id": 1,

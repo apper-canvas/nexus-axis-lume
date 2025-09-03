@@ -46,7 +46,7 @@ export const getDeals = async () => {
       return [];
     }
     
-    return response.data.map(deal => ({
+return response.data.map(deal => ({
       Id: deal.Id,
       name: deal.name_c || deal.Name || '',
       contactId: deal.contact_id_c || null,
@@ -58,7 +58,14 @@ export const getDeals = async () => {
       description: deal.description_c || '',
       createdAt: deal.created_at_c || new Date().toISOString(),
       updatedAt: deal.updated_at_c || new Date().toISOString(),
-      history: deal.history_c ? JSON.parse(deal.history_c) : []
+      history: (() => {
+        try {
+          return deal.history_c ? JSON.parse(deal.history_c) : [];
+        } catch (error) {
+          console.warn('Failed to parse deal history JSON:', error);
+          return [];
+        }
+      })()
     }));
   } catch (error) {
     console.error("Error fetching deals:", error?.response?.data?.message || error);
@@ -94,7 +101,7 @@ export const getDealById = async (id) => {
       return null;
     }
     
-    const deal = response.data;
+const deal = response.data;
     return {
       Id: deal.Id,
       name: deal.name_c || deal.Name || '',
@@ -107,7 +114,14 @@ export const getDealById = async (id) => {
       description: deal.description_c || '',
       createdAt: deal.created_at_c || new Date().toISOString(),
       updatedAt: deal.updated_at_c || new Date().toISOString(),
-      history: deal.history_c ? JSON.parse(deal.history_c) : []
+      history: (() => {
+        try {
+          return deal.history_c ? JSON.parse(deal.history_c) : [];
+        } catch (error) {
+          console.warn('Failed to parse deal history JSON:', error);
+          return [];
+        }
+      })()
     };
   } catch (error) {
     console.error(`Error fetching deal ${id}:`, error?.response?.data?.message || error);
@@ -167,7 +181,7 @@ export const createDeal = async (dealData) => {
       if (successful.length > 0) {
         const createdDeal = successful[0].data;
         return {
-          Id: createdDeal.Id,
+Id: createdDeal.Id,
           name: createdDeal.name_c || createdDeal.Name || '',
           contactId: createdDeal.contact_id_c || null,
           contactName: createdDeal.contact_name_c || '',
@@ -178,7 +192,14 @@ export const createDeal = async (dealData) => {
           description: createdDeal.description_c || '',
           createdAt: createdDeal.created_at_c || new Date().toISOString(),
           updatedAt: createdDeal.updated_at_c || new Date().toISOString(),
-          history: createdDeal.history_c ? JSON.parse(createdDeal.history_c) : []
+          history: (() => {
+            try {
+              return createdDeal.history_c ? JSON.parse(createdDeal.history_c) : [];
+            } catch (error) {
+              console.warn('Failed to parse deal history JSON:', error);
+              return [];
+            }
+          })()
         };
       }
     }
@@ -235,7 +256,7 @@ export const updateDeal = async (id, dealData) => {
       if (successful.length > 0) {
         const updatedDeal = successful[0].data;
         return {
-          Id: updatedDeal.Id,
+Id: updatedDeal.Id,
           name: updatedDeal.name_c || updatedDeal.Name || '',
           contactId: updatedDeal.contact_id_c || null,
           contactName: updatedDeal.contact_name_c || '',
@@ -246,7 +267,14 @@ export const updateDeal = async (id, dealData) => {
           description: updatedDeal.description_c || '',
           createdAt: updatedDeal.created_at_c || new Date().toISOString(),
           updatedAt: updatedDeal.updated_at_c || new Date().toISOString(),
-          history: updatedDeal.history_c ? JSON.parse(updatedDeal.history_c) : []
+          history: (() => {
+            try {
+              return updatedDeal.history_c ? JSON.parse(updatedDeal.history_c) : [];
+            } catch (error) {
+              console.warn('Failed to parse deal history JSON:', error);
+              return [];
+            }
+          })()
         };
       }
     }
