@@ -6,9 +6,9 @@ import Loading from "@/components/ui/Loading";
 import Error from "@/components/ui/Error";
 import Empty from "@/components/ui/Empty";
 import { getContacts, createContact, updateContact, deleteContact } from "@/services/api/contactService";
-const [companies, setCompanies] = useState([]);
 const ContactsPage = () => {
-const [contacts, setContacts] = useState([]);
+  const [contacts, setContacts] = useState([]);
+  const [companies, setCompanies] = useState([]);
   const [companiesLoading, setCompaniesLoading] = useState(true);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");

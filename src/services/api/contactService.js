@@ -188,7 +188,6 @@ export const updateContact = async (id, contactData) => {
         email_c: contactData.email || '',
 phone_c: contactData.phone || '',
         company_c: contactData.companyId ? parseInt(contactData.companyId) : null,
-        company_c: contactData.company || '',
         status_c: contactData.status || 'lead',
         notes_c: contactData.notes || '',
         updated_at_c: new Date().toISOString()
