@@ -126,8 +126,8 @@ export async function createFollowUpReminder(reminderData) {
       const successful = response.results.filter(r => r.success);
       const failed = response.results.filter(r => !r.success);
       
-      if (failed.length > 0) {
-        console.error(`Failed to create ${failed.length} follow-up reminders:`, JSON.stringify(failed));
+if (failed.length > 0) {
+        console.error(`Failed to create ${failed.length} follow-up reminders: ${JSON.stringify(failed)}`);
         failed.forEach(record => {
           record.errors?.forEach(error => toast.error(`${error.fieldLabel}: ${error}`));
           if (record.message) toast.error(record.message);
@@ -187,8 +187,8 @@ export async function updateFollowUpReminder(id, reminderData) {
       const successful = response.results.filter(r => r.success);
       const failed = response.results.filter(r => !r.success);
       
-      if (failed.length > 0) {
-        console.error(`Failed to update ${failed.length} follow-up reminders:`, JSON.stringify(failed));
+if (failed.length > 0) {
+        console.error(`Failed to update ${failed.length} follow-up reminders: ${JSON.stringify(failed)}`);
         failed.forEach(record => {
           record.errors?.forEach(error => toast.error(`${error.fieldLabel}: ${error}`));
           if (record.message) toast.error(record.message);
