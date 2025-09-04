@@ -108,7 +108,7 @@ const apperClient = getApperClient();
         Tags: reminderData.tags || '',
         reminder_date_c: reminderData.reminderDate,
         associated_item_type_c: reminderData.associatedItemType,
-        associated_item_id_c: parseInt(reminderData.associatedItemId),
+associated_item_id_c: parseInt(reminderData.associatedItemId),
         reminder_type_c: reminderData.reminderType,
         assigned_to_user_id_c: reminderData.assignedToUserId ? parseInt(reminderData.assignedToUserId) : null
       }]

@@ -114,7 +114,7 @@ export async function createTask(taskData) {
         description_c: taskData.description || '',
         due_date_c: taskData.dueDate || '',
         status_c: taskData.status || 'Not Started',
-        assigned_to_user_id_c: taskData.assignedToUserId ? parseInt(taskData.assignedToUserId) : null,
+assigned_to_user_id_c: taskData.assignedToUserId ? parseInt(taskData.assignedToUserId) : null,
         external_task_id_c: taskData.externalTaskId || ''
       }]
     };

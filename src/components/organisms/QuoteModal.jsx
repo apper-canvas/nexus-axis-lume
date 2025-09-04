@@ -5,6 +5,8 @@ import Label from '@/components/atoms/Label';
 import ApperIcon from '@/components/ApperIcon';
 import { cn } from '@/utils/cn';
 
+import { toast } from 'react-toastify';
+
 const QuoteModal = ({ quote, onClose, onSave }) => {
   const [formData, setFormData] = useState({
     customerName: '',
@@ -99,8 +101,9 @@ const QuoteModal = ({ quote, onClose, onSave }) => {
         amount: parseFloat(formData.amount),
         validUntil: formData.validUntil || null
       });
-    } catch (error) {
-      console.error('Error saving quote:', error);
+} catch (error) {
+      console.error('Error saving quote:', error?.response?.data?.message || error);
+      toast.error('Failed to save quote');
     } finally {
       setLoading(false);
     }

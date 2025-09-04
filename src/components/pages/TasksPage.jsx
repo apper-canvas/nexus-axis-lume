@@ -136,8 +136,8 @@ const TasksPage = () => {
       
       setShowTaskModal(false);
       loadTasks();
-    } catch (error) {
-      console.error("Error saving task:", error);
+} catch (error) {
+      console.error("Error saving task:", error?.response?.data?.message || error);
       toast.error("Failed to save task");
     } finally {
       setIsSubmitting(false);
@@ -154,7 +154,7 @@ const TasksPage = () => {
         toast.success("Task deleted successfully");
       }
     } catch (error) {
-      console.error("Error deleting task:", error);
+console.error("Error deleting task:", error?.response?.data?.message || error);
       toast.error("Failed to delete task");
     }
   };
@@ -170,7 +170,7 @@ const TasksPage = () => {
         toast.success("Task status updated");
       }
     } catch (error) {
-      console.error("Error updating task status:", error);
+console.error("Error updating task status:", error?.response?.data?.message || error);
       toast.error("Failed to update task status");
     }
   };
