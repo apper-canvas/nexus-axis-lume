@@ -9,6 +9,7 @@ import ContactsPage from "@/components/pages/ContactsPage";
 import DealsPage from "@/components/pages/DealsPage";
 import TasksPage from "@/components/pages/TasksPage";
 import CompaniesPage from "@/components/pages/CompaniesPage";
+import QuotePage from "@/components/pages/QuotePage";
 import CompanyProfile from "@/components/organisms/CompanyProfile";
 import AnalyticsPage from "@/components/pages/AnalyticsPage";
 import SettingsPage from "@/components/pages/SettingsPage";
@@ -157,6 +158,7 @@ function AppContent() {
                       <Route path="/companies" element={<CompaniesPage />} />
                       <Route path="/companies/:id" element={<CompanyProfile />} />
                       <Route path="/analytics" element={<AnalyticsPage />} />
+<Route path="/quotes" element={<QuotePage />} />
                       <Route path="/settings" element={<SettingsPage />} />
                     </Routes>
                   </div>

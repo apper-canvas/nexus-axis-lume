@@ -11,6 +11,7 @@ const navigation = [
     { name: "Deals", href: "/deals", icon: "TrendingUp" },
     { name: "Tasks", href: "/tasks", icon: "CheckSquare" },
     { name: "Companies", href: "/companies", icon: "Building2" },
+    { name: "Quotes", href: "/quotes", icon: "FileText" },
     { name: "Analytics", href: "/analytics", icon: "BarChart3" },
     { name: "Settings", href: "/settings", icon: "Settings" }
   ];
