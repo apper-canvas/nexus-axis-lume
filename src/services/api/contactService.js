@@ -242,7 +242,8 @@ company: updatedContact.company_c?.Name || '',
 };
 
 export const deleteContact = async (id) => {
-  try {
+try {
+    const apperClient = getApperClient();
     const apperClient = getApperClient();
     
     const params = {

@@ -100,7 +100,8 @@ export async function getFollowUpReminderById(id) {
 export async function createFollowUpReminder(reminderData) {
   try {
     const apperClient = getApperClient();
-    const tableName = 'follow_up_reminder_c';
+const tableName = 'follow_up_reminder_c';
+    const apperClient = getApperClient();
     
     const params = {
       records: [{
@@ -160,7 +161,8 @@ if (failed.length > 0) {
 export async function updateFollowUpReminder(id, reminderData) {
   try {
     const apperClient = getApperClient();
-    const tableName = 'follow_up_reminder_c';
+const tableName = 'follow_up_reminder_c';
+    const apperClient = getApperClient();
     
     const params = {
       records: [{

@@ -14,7 +14,7 @@ const tableName = 'quote_c';
 export const getQuotes = async () => {
   try {
     const apperClient = getApperClient();
-    
+const apperClient = getApperClient();
     const params = {
       fields: [
         {"field": {"Name": "Id"}},
@@ -120,7 +120,7 @@ export const getQuoteById = async (id) => {
 export const createQuote = async (quoteData) => {
   try {
     const apperClient = getApperClient();
-    
+const apperClient = getApperClient();
     const params = {
       records: [{
         Name: quoteData.customerName || '',
@@ -188,7 +188,8 @@ export const createQuote = async (quoteData) => {
 };
 
 export const updateQuote = async (id, quoteData) => {
-  try {
+try {
+    const apperClient = getApperClient();
     const apperClient = getApperClient();
     
     const params = {
@@ -258,7 +259,8 @@ export const updateQuote = async (id, quoteData) => {
 };
 
 export const deleteQuote = async (id) => {
-  try {
+try {
+    const apperClient = getApperClient();
     const apperClient = getApperClient();
     
     const params = {

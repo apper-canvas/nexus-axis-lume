@@ -94,7 +94,7 @@ export const getCompanies = async (searchTerm = '') => {
 export const getCompanyById = async (id) => {
   try {
     const apperClient = getApperClient();
-    
+const apperClient = getApperClient();
     const params = {
       fields: [
         {"field": {"Name": "Id"}},
@@ -154,7 +154,7 @@ export const getCompanyById = async (id) => {
 export const createCompany = async (companyData) => {
   try {
     const apperClient = getApperClient();
-    
+const apperClient = getApperClient();
     const params = {
       records: [{
         Name: companyData.name || '',
@@ -210,7 +210,8 @@ export const createCompany = async (companyData) => {
 };
 
 export const updateCompany = async (id, companyData) => {
-  try {
+try {
+    const apperClient = getApperClient();
     const apperClient = getApperClient();
     
     const params = {
