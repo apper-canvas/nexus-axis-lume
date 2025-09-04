@@ -60,8 +60,32 @@ if (!formData.amount || parseFloat(formData.amount) <= 0) {
     return Object.keys(newErrors).length === 0;
   };
 
+// Calculate total amount with discount and GST applied to items
+  const calculateTotal = (items, discount = 0, gst = 0) => {
+    const subtotal = items.reduce((sum, item) => sum + (item.total || 0), 0);
+    const discountAmount = (subtotal * (parseFloat(discount) || 0)) / 100;
+    const discountedAmount = subtotal - discountAmount;
+    const gstAmount = (discountedAmount * (parseFloat(gst) || 0)) / 100;
+    const finalTotal = discountedAmount + gstAmount;
+    return Math.round(finalTotal * 100) / 100; // Round to 2 decimal places
+  };
+
   const handleInputChange = (field, value) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    setFormData(prev => {
+      const updated = { ...prev, [field]: value };
+      
+      // Recalculate amount when discount or GST changes
+      if (field === 'discount' || field === 'gst') {
+        const newTotal = calculateTotal(prev.items, 
+          field === 'discount' ? value : prev.discount,
+          field === 'gst' ? value : prev.gst
+        );
+        updated.amount = newTotal.toString();
+      }
+      
+      return updated;
+    });
+    
     if (errors[field]) {
       setErrors(prev => ({ ...prev, [field]: '' }));
     }
@@ -83,8 +107,9 @@ if (!formData.amount || parseFloat(formData.amount) <= 0) {
       }));
       
       // Update total amount
-      const newTotal = [...formData.items, item].reduce((sum, item) => sum + item.total, 0);
-      setFormData(prev => ({ ...prev, amount: newTotal.toString() }));
+const updatedItems = [...formData.items, item];
+      const newTotal = calculateTotal(updatedItems, formData.discount, formData.gst);
+      setFormData(prev => ({ ...prev, items: updatedItems, amount: newTotal.toString() }));
       
       setNewItem({ description: '', quantity: 1, price: '' });
     }
@@ -95,8 +120,8 @@ if (!formData.amount || parseFloat(formData.amount) <= 0) {
     setFormData(prev => ({ ...prev, items: updatedItems }));
     
     // Update total amount
-    const newTotal = updatedItems.reduce((sum, item) => sum + item.total, 0);
-    setFormData(prev => ({ ...prev, amount: newTotal.toString() }));
+const newTotal = calculateTotal(updatedItems, formData.discount, formData.gst);
+    setFormData(prev => ({ ...prev, items: updatedItems, amount: newTotal.toString() }));
   };
 
   const handleSubmit = async (e) => {
