@@ -157,6 +157,12 @@ const QuoteList = ({
                     <span>Valid Until</span>
                     <ApperIcon name={getSortIcon("validUntil")} size={14} />
                   </div>
+</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Discount
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  GST
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Items
@@ -201,7 +207,13 @@ const QuoteList = ({
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="text-sm font-semibold text-gray-900">
                       {formatCurrency(quote.amount)}
-                    </div>
+</div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    {quote.discount ? `${quote.discount}%` : '-'}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    {quote.gst ? `${quote.gst}%` : '-'}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <Badge variant={getStatusVariant(quote.status)}>

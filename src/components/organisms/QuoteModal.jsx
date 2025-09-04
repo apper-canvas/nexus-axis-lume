@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import Button from '@/components/atoms/Button';
-import Input from '@/components/atoms/Input';
-import Label from '@/components/atoms/Label';
-import ApperIcon from '@/components/ApperIcon';
-import { cn } from '@/utils/cn';
+import React, { useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import { cn } from "@/utils/cn";
+import ApperIcon from "@/components/ApperIcon";
+import FormField from "@/components/molecules/FormField";
+import Input from "@/components/atoms/Input";
+import Button from "@/components/atoms/Button";
+import Label from "@/components/atoms/Label";
 
-import { toast } from 'react-toastify';
 
 const QuoteModal = ({ quote, onClose, onSave }) => {
   const [formData, setFormData] = useState({
@@ -13,8 +14,10 @@ const QuoteModal = ({ quote, onClose, onSave }) => {
     amount: '',
     status: 'Draft',
     validUntil: '',
-    items: [],
-    notes: ''
+items: [],
+    notes: '',
+    discount: '',
+    gst: ''
   });
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
@@ -24,11 +27,13 @@ const QuoteModal = ({ quote, onClose, onSave }) => {
     if (quote) {
       setFormData({
         customerName: quote.customerName || '',
-        amount: quote.amount?.toString() || '',
+amount: quote.amount?.toString() || '',
         status: quote.status || 'Draft',
         validUntil: quote.validUntil ? quote.validUntil.split('T')[0] : '',
         items: quote.items || [],
-        notes: quote.notes || ''
+        notes: quote.notes || '',
+        discount: quote.discount?.toString() || '',
+        gst: quote.gst?.toString() || ''
       });
     }
   }, [quote]);
@@ -40,10 +45,17 @@ const QuoteModal = ({ quote, onClose, onSave }) => {
       newErrors.customerName = 'Customer name is required';
     }
 
-    if (!formData.amount || parseFloat(formData.amount) <= 0) {
+if (!formData.amount || parseFloat(formData.amount) <= 0) {
       newErrors.amount = 'Valid amount is required';
     }
 
+    if (formData.discount && (isNaN(parseFloat(formData.discount)) || parseFloat(formData.discount) < 0)) {
+      newErrors.discount = 'Discount must be a valid positive number';
+    }
+
+    if (formData.gst && (isNaN(parseFloat(formData.gst)) || parseFloat(formData.gst) < 0)) {
+      newErrors.gst = 'GST must be a valid positive number';
+    }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -97,9 +109,11 @@ const QuoteModal = ({ quote, onClose, onSave }) => {
     setLoading(true);
     try {
       await onSave({
-        ...formData,
+...formData,
         amount: parseFloat(formData.amount),
-        validUntil: formData.validUntil || null
+        validUntil: formData.validUntil || null,
+        discount: formData.discount ? parseFloat(formData.discount) : null,
+        gst: formData.gst ? parseFloat(formData.gst) : null
       });
 } catch (error) {
       console.error('Error saving quote:', error?.response?.data?.message || error);
@@ -194,6 +208,30 @@ const QuoteModal = ({ quote, onClose, onSave }) => {
                   placeholder="Select expiry date"
                 />
               </div>
+</div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <FormField
+                label="Discount"
+                type="number"
+                step="0.01"
+                min="0"
+                placeholder="0.00"
+                value={formData.discount}
+                onChange={(e) => handleInputChange('discount', e.target.value)}
+                error={errors.discount}
+              />
+              
+              <FormField
+                label="GST"
+                type="number"
+                step="0.01"
+                min="0"
+                placeholder="0.00"
+                value={formData.gst}
+                onChange={(e) => handleInputChange('gst', e.target.value)}
+                error={errors.gst}
+              />
             </div>
 
             {/* Quote Items */}

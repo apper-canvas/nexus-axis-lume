@@ -22,8 +22,10 @@ try {
         {"field": {"Name": "amount_c"}},
         {"field": {"Name": "status_c"}},
         {"field": {"Name": "valid_until_c"}},
-        {"field": {"Name": "items_c"}},
+{"field": {"Name": "items_c"}},
         {"field": {"Name": "notes_c"}},
+        {"field": {"Name": "discount_c"}},
+        {"field": {"Name": "gst_c"}},
         {"field": {"Name": "created_at_c"}},
         {"field": {"Name": "updated_at_c"}}
       ],
@@ -47,7 +49,9 @@ try {
       customerName: quote.customer_name_c || '',
       amount: quote.amount_c || 0,
       status: quote.status_c || 'Draft',
-      validUntil: quote.valid_until_c || '',
+validUntil: quote.valid_until_c || '',
+      discount: quote.discount_c || null,
+      gst: quote.gst_c || null,
       items: (() => {
         try {
           return quote.items_c ? JSON.parse(quote.items_c) : [];
@@ -76,8 +80,10 @@ export const getQuoteById = async (id) => {
         {"field": {"Name": "Name"}},
         {"field": {"Name": "customer_name_c"}},
         {"field": {"Name": "amount_c"}},
-        {"field": {"Name": "status_c"}},
+{"field": {"Name": "status_c"}},
         {"field": {"Name": "valid_until_c"}},
+        {"field": {"Name": "discount_c"}},
+        {"field": {"Name": "gst_c"}},
         {"field": {"Name": "items_c"}},
         {"field": {"Name": "notes_c"}},
         {"field": {"Name": "created_at_c"}},
@@ -98,6 +104,8 @@ export const getQuoteById = async (id) => {
       amount: quote.amount_c || 0,
       status: quote.status_c || 'Draft',
       validUntil: quote.valid_until_c || '',
+discount: quote.discount_c || null,
+      gst: quote.gst_c || null,
       items: (() => {
         try {
           return quote.items_c ? JSON.parse(quote.items_c) : [];
@@ -124,8 +132,10 @@ try {
         Name: quoteData.customerName || '',
         customer_name_c: quoteData.customerName || '',
         amount_c: parseFloat(quoteData.amount) || 0,
-        status_c: quoteData.status || 'Draft',
+status_c: quoteData.status || 'Draft',
         valid_until_c: quoteData.validUntil || '',
+        discount_c: quoteData.discount || null,
+        gst_c: quoteData.gst || null,
         items_c: JSON.stringify(quoteData.items || []),
         notes_c: quoteData.notes || '',
         created_at_c: new Date().toISOString(),
@@ -162,7 +172,9 @@ try {
           customerName: createdQuote.customer_name_c || '',
           amount: createdQuote.amount_c || 0,
           status: createdQuote.status_c || 'Draft',
-          validUntil: createdQuote.valid_until_c || '',
+validUntil: createdQuote.valid_until_c || '',
+          discount: createdQuote.discount_c || null,
+          gst: createdQuote.gst_c || null,
           items: (() => {
             try {
               return createdQuote.items_c ? JSON.parse(createdQuote.items_c) : [];
@@ -194,8 +206,10 @@ try {
         Id: parseInt(id),
         Name: quoteData.customerName || '',
         customer_name_c: quoteData.customerName || '',
-        amount_c: parseFloat(quoteData.amount) || 0,
+amount_c: parseFloat(quoteData.amount) || 0,
         status_c: quoteData.status || 'Draft',
+        discount_c: quoteData.discount || null,
+        gst_c: quoteData.gst || null,
         valid_until_c: quoteData.validUntil || '',
         items_c: JSON.stringify(quoteData.items || []),
         notes_c: quoteData.notes || '',
@@ -231,8 +245,10 @@ try {
           Id: updatedQuote.Id,
           customerName: updatedQuote.customer_name_c || '',
           amount: updatedQuote.amount_c || 0,
-          status: updatedQuote.status_c || 'Draft',
+status: updatedQuote.status_c || 'Draft',
           validUntil: updatedQuote.valid_until_c || '',
+          discount: updatedQuote.discount_c || null,
+          gst: updatedQuote.gst_c || null,
           items: (() => {
             try {
               return updatedQuote.items_c ? JSON.parse(updatedQuote.items_c) : [];
