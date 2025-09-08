@@ -52,11 +52,13 @@ const PurchaseOrderModal = ({
       return;
     }
 
-    setLoading(true);
+setLoading(true);
     try {
       await onSave(formData);
       onClose();
     } catch (error) {
+      console.error("Error saving purchase order:", error);
+      return;
       console.error("Error saving purchase order:", error);
     } finally {
       setLoading(false);
