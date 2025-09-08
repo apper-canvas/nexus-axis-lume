@@ -128,13 +128,13 @@ const AnalyticsPage = () => {
     }
   };
 
-  if (error) {
+if (error) {
     return (
       <div className="min-h-[50vh] flex items-center justify-center">
         <div className="text-center">
           <ApperIcon name="AlertCircle" size={48} className="mx-auto text-red-500 mb-4" />
           <h3 className="text-lg font-semibold text-gray-900 mb-2">Failed to Load Analytics</h3>
-          <p className="text-gray-600 mb-4">{error}</p>
+          <div className="text-gray-600 mb-4">{error}</div>
           <Button onClick={loadAnalyticsData} variant="primary">
             <ApperIcon name="RefreshCw" size={16} className="mr-2" />
             Retry
