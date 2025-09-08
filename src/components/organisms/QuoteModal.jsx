@@ -14,26 +14,28 @@ const QuoteModal = ({ quote, onClose, onSave }) => {
     amount: '',
     status: 'Draft',
     validUntil: '',
-name: '',
+    name: '',
     contactId: '',
     discount: '',
-    gst: ''
+    gst: '',
+    items: []
   });
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const [newItem, setNewItem] = useState({ description: '', quantity: 1, price: '' });
 
-  useEffect(() => {
+useEffect(() => {
     if (quote) {
       setFormData({
         customerName: quote.customerName || '',
-name: quote.name || '',
+        name: quote.name || '',
         amount: quote.amount?.toString() || '',
         status: quote.status || 'Draft',
         validUntil: quote.validUntil ? quote.validUntil.split('T')[0] : '',
         contactId: quote.contactId || '',
         discount: quote.discount?.toString() || '',
-        gst: quote.gst?.toString() || ''
+        gst: quote.gst?.toString() || '',
+        items: quote.items || []
       });
     }
   }, [quote]);
