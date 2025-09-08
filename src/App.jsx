@@ -8,6 +8,7 @@ import Header from "@/components/organisms/Header";
 import ContactsPage from "@/components/pages/ContactsPage";
 import DealsPage from "@/components/pages/DealsPage";
 import TasksPage from "@/components/pages/TasksPage";
+import ActivitiesPage from "@/components/pages/ActivitiesPage";
 import CompaniesPage from "@/components/pages/CompaniesPage";
 import QuotePage from "@/components/pages/QuotePage";
 import CompanyProfile from "@/components/organisms/CompanyProfile";
@@ -154,7 +155,8 @@ function AppContent() {
                     <Routes>
 <Route path="/" element={<ContactsPage />} />
                       <Route path="/deals" element={<DealsPage />} />
-                      <Route path="/tasks" element={<TasksPage />} />
+<Route path="/tasks" element={<TasksPage />} />
+                      <Route path="/activities" element={<ActivitiesPage />} />
                       <Route path="/companies" element={<CompaniesPage />} />
                       <Route path="/companies/:id" element={<CompanyProfile />} />
                       <Route path="/analytics" element={<AnalyticsPage />} />
