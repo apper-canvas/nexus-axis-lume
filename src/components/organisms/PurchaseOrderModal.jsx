@@ -59,7 +59,6 @@ setLoading(true);
     } catch (error) {
       console.error("Error saving purchase order:", error);
       return;
-      console.error("Error saving purchase order:", error);
     } finally {
       setLoading(false);
     }
