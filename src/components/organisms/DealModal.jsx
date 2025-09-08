@@ -5,6 +5,9 @@ import FormField from "@/components/molecules/FormField";
 import { createDeal, updateDeal } from "@/services/api/dealService";
 import { createFollowUpReminder } from "@/services/api/followUpReminderService";
 import { createTask } from "@/services/api/taskService";
+import { getComments, createComment, updateComment, deleteComment } from "@/services/api/commentService";
+import { useSelector } from 'react-redux';
+import { format } from 'date-fns';
 import { cn } from "@/utils/cn";
 
 const PIPELINE_STAGES = [
@@ -32,9 +35,19 @@ const DealModal = ({ isOpen, onClose, deal, contacts, onSave }) => {
     type: "Call",
     notes: ""
   });
-
-  const [errors, setErrors] = useState({});
+const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Comments state
+  const [comments, setComments] = useState([]);
+  const [loadingComments, setLoadingComments] = useState(false);
+  const [showComments, setShowComments] = useState(false);
+  const [newComment, setNewComment] = useState('');
+  const [editingCommentId, setEditingCommentId] = useState(null);
+  const [editingCommentText, setEditingCommentText] = useState('');
+
+  // Get current user from Redux store
+  const { user } = useSelector((state) => state.user);
 
   useEffect(() => {
     if (deal) {
@@ -70,8 +83,105 @@ description: deal.description || ""
         notes: ""
       });
     }
-    setErrors({});
+setErrors({});
+    setNewComment('');
+    setEditingCommentId(null);
+    setEditingCommentText('');
+    
+    // Load comments if deal exists
+    if (deal && isOpen) {
+      loadComments(deal.Id);
+    } else {
+      setComments([]);
+    }
   }, [deal, isOpen]);
+
+  const loadComments = async (dealId) => {
+    if (!dealId) return;
+    
+    setLoadingComments(true);
+    try {
+      const dealComments = await getComments(dealId);
+      setComments(dealComments || []);
+    } catch (error) {
+      console.error("Error loading comments:", error);
+      setComments([]);
+    } finally {
+      setLoadingComments(false);
+    }
+  };
+
+  const handleAddComment = async () => {
+    if (!newComment.trim() || !deal) return;
+
+    try {
+      const commentData = {
+        dealId: deal.Id,
+        dealName: deal.name,
+        text: newComment.trim(),
+        authorId: user?.userId || null,
+        authorName: user ? `${user.firstName || ''} ${user.lastName || ''}`.trim() : 'Unknown'
+      };
+
+      const createdComment = await createComment(commentData);
+      if (createdComment) {
+        setComments(prev => [createdComment, ...prev]);
+        setNewComment('');
+      }
+    } catch (error) {
+      console.error("Error adding comment:", error);
+    }
+  };
+
+  const handleEditComment = async (commentId) => {
+    if (!editingCommentText.trim()) return;
+
+    try {
+      const comment = comments.find(c => c.Id === commentId);
+      const updatedComment = await updateComment(commentId, {
+        text: editingCommentText.trim(),
+        dealId: comment.dealId,
+        author: comment.author,
+        authorId: comment.authorId,
+        createdOn: comment.createdOn
+      });
+
+      if (updatedComment) {
+        setComments(prev => prev.map(c => 
+          c.Id === commentId ? updatedComment : c
+        ));
+        setEditingCommentId(null);
+        setEditingCommentText('');
+      }
+    } catch (error) {
+      console.error("Error updating comment:", error);
+    }
+  };
+
+  const handleDeleteComment = async (commentId) => {
+    if (!confirm("Are you sure you want to delete this comment?")) {
+      return;
+    }
+
+    try {
+      const success = await deleteComment(commentId);
+      if (success) {
+        setComments(prev => prev.filter(c => c.Id !== commentId));
+      }
+    } catch (error) {
+      console.error("Error deleting comment:", error);
+    }
+  };
+
+  const startEditingComment = (comment) => {
+    setEditingCommentId(comment.Id);
+    setEditingCommentText(comment.text);
+  };
+
+  const cancelEditingComment = () => {
+    setEditingCommentId(null);
+    setEditingCommentText('');
+  };
 
   const validateForm = () => {
     const newErrors = {};
@@ -372,8 +482,140 @@ try {
                   />
                 </div>
               </div>
-            )}
+)}
           </div>
+
+          {/* Comments Section */}
+          {deal && (
+            <div className="space-y-4 pt-4 border-t border-gray-200">
+              <div 
+                className="flex items-center justify-between cursor-pointer"
+                onClick={() => setShowComments(!showComments)}
+              >
+                <h3 className="text-sm font-medium text-gray-700 flex items-center">
+                  <ApperIcon name="MessageSquare" size={16} className="mr-2" />
+                  Comments ({comments.length})
+                </h3>
+                <ApperIcon 
+                  name={showComments ? "ChevronUp" : "ChevronDown"} 
+                  size={16} 
+                  className="text-gray-400" 
+                />
+              </div>
+
+              {showComments && (
+                <div className="space-y-4 pl-6">
+                  {/* Add Comment Form */}
+                  <div className="space-y-2">
+                    <textarea
+                      value={newComment}
+                      onChange={(e) => setNewComment(e.target.value)}
+                      placeholder="Add a comment..."
+                      rows={2}
+                      className="block w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 shadow-sm transition-all duration-200 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
+                    />
+                    {newComment.trim() && (
+                      <div className="flex justify-end space-x-2">
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          onClick={() => setNewComment('')}
+                        >
+                          Cancel
+                        </Button>
+                        <Button
+                          type="button"
+                          variant="primary"
+                          size="sm"
+                          onClick={handleAddComment}
+                        >
+                          Add Comment
+                        </Button>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Comments List */}
+                  <div className="space-y-3 max-h-60 overflow-y-auto">
+                    {loadingComments ? (
+                      <div className="flex justify-center py-4">
+                        <ApperIcon name="Loader2" size={16} className="animate-spin text-gray-400" />
+                      </div>
+                    ) : comments.length === 0 ? (
+                      <p className="text-sm text-gray-500 text-center py-4">
+                        No comments yet. Be the first to add one!
+                      </p>
+                    ) : (
+                      comments.map(comment => (
+                        <div key={comment.Id} className="bg-gray-50 rounded-lg p-3 space-y-2">
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center space-x-2">
+                              <span className="text-xs font-medium text-gray-700">
+                                {comment.author}
+                              </span>
+                              <span className="text-xs text-gray-500">
+                                {format(new Date(comment.date), 'MMM d, yyyy h:mm a')}
+                              </span>
+                            </div>
+                            <div className="flex items-center space-x-1">
+                              <button
+                                type="button"
+                                onClick={() => startEditingComment(comment)}
+                                className="text-gray-400 hover:text-gray-600 transition-colors"
+                              >
+                                <ApperIcon name="Edit2" size={14} />
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => handleDeleteComment(comment.Id)}
+                                className="text-gray-400 hover:text-red-600 transition-colors"
+                              >
+                                <ApperIcon name="Trash2" size={14} />
+                              </button>
+                            </div>
+                          </div>
+                          
+                          {editingCommentId === comment.Id ? (
+                            <div className="space-y-2">
+                              <textarea
+                                value={editingCommentText}
+                                onChange={(e) => setEditingCommentText(e.target.value)}
+                                rows={2}
+                                className="block w-full rounded border border-gray-300 bg-white px-2 py-1 text-sm text-gray-900 focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500/20"
+                              />
+                              <div className="flex justify-end space-x-2">
+                                <Button
+                                  type="button"
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={cancelEditingComment}
+                                >
+                                  Cancel
+                                </Button>
+                                <Button
+                                  type="button"
+                                  variant="primary"
+                                  size="sm"
+                                  onClick={() => handleEditComment(comment.Id)}
+                                >
+                                  Save
+                                </Button>
+                              </div>
+                            </div>
+                          ) : (
+                            <p className="text-sm text-gray-800 whitespace-pre-wrap">
+                              {comment.text}
+                            </p>
+                          )}
+                        </div>
+                      ))
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
           <div className="flex items-center justify-end space-x-3 pt-4">
             <Button
               type="button"
