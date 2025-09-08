@@ -112,7 +112,7 @@ export const createPurchaseOrder = async (poData) => {
     const apperClient = getApperClient();
     
     const params = {
-      records: [{
+records: [{
         Name: poData.name || '',
         name_c: poData.name || '',
         vendor_c: poData.vendorId ? parseInt(poData.vendorId) : null,
@@ -175,7 +175,7 @@ export const updatePurchaseOrder = async (id, poData) => {
     const apperClient = getApperClient();
     
     const params = {
-      records: [{
+records: [{
         Id: parseInt(id),
         Name: poData.name || '',
         name_c: poData.name || '',

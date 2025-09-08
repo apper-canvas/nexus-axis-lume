@@ -25,7 +25,7 @@ const PurchaseOrderModal = ({
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (purchaseOrder) {
+if (purchaseOrder) {
       setFormData({
         name: purchaseOrder.name || "",
         vendorId: purchaseOrder.vendorId || "",
@@ -36,7 +36,7 @@ const PurchaseOrderModal = ({
       });
     } else {
       setFormData({
-        name: "",
+name: "",
         vendorId: "",
         orderDate: "",
         totalValue: "",
