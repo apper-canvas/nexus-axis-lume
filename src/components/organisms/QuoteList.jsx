@@ -206,25 +206,25 @@ const QuoteList = ({
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="text-sm font-semibold text-gray-900">
-                      {formatCurrency(quote.amount)}
-</div>
+{formatCurrency(quote.amount)}
+                    </div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+<td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                     {quote.discount ? `${quote.discount}%` : '-'}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+<td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                     {quote.gst ? `${quote.gst}%` : '-'}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
+<td className="px-6 py-4 whitespace-nowrap">
                     <Badge variant={getStatusVariant(quote.status)}>
                       {quote.status}
                     </Badge>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {quote.validUntil ? format(new Date(quote.validUntil), "MMM d, yyyy") : 'No expiry'}
+<td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    {quote.validUntil ? format(new Date(quote.validUntil), "MMM d, yyyy") : 'No date'}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {quote.items?.length || 0} items
+<td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    {quote.customerName || 'No customer'}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     {format(new Date(quote.createdAt), "MMM d, yyyy")}

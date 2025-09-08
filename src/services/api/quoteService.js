@@ -15,19 +15,16 @@ export const getQuotes = async () => {
 try {
     const apperClient = getApperClient();
     const params = {
-      fields: [
+fields: [
         {"field": {"Name": "Id"}},
         {"field": {"Name": "Name"}},
-        {"field": {"Name": "customer_name_c"}},
-        {"field": {"Name": "amount_c"}},
+        {"field": {"Name": "name_c"}},
+        {"field": {"Name": "contact_id_c"}},
+        {"field": {"Name": "value_c"}},
+        {"field": {"Name": "quote_date_c"}},
         {"field": {"Name": "status_c"}},
-        {"field": {"Name": "valid_until_c"}},
-{"field": {"Name": "items_c"}},
-        {"field": {"Name": "notes_c"}},
         {"field": {"Name": "discount_c"}},
-        {"field": {"Name": "gst_c"}},
-        {"field": {"Name": "created_at_c"}},
-        {"field": {"Name": "updated_at_c"}}
+        {"field": {"Name": "gst_c"}}
       ],
       orderBy: [{"fieldName": "Id", "sorttype": "DESC"}]
     };
@@ -49,20 +46,14 @@ try {
       customerName: quote.customer_name_c || '',
       amount: quote.amount_c || 0,
       status: quote.status_c || 'Draft',
-validUntil: quote.valid_until_c || '',
+name: quote.name_c || '',
+      customerName: quote.contact_id_c?.Name || '',
+      contactId: quote.contact_id_c?.Id || null,
+      amount: quote.value_c || 0,
+      status: quote.status_c || 'Draft',
+      validUntil: quote.quote_date_c || '',
       discount: quote.discount_c || null,
-      gst: quote.gst_c || null,
-      items: (() => {
-        try {
-          return quote.items_c ? JSON.parse(quote.items_c) : [];
-        } catch (error) {
-          console.warn('Failed to parse quote items JSON:', error);
-          return [];
-        }
-      })(),
-      notes: quote.notes_c || '',
-      createdAt: quote.created_at_c || new Date().toISOString(),
-      updatedAt: quote.updated_at_c || new Date().toISOString()
+      gst: quote.gst_c || null
     }));
   } catch (error) {
     console.error("Error fetching quotes:", error?.response?.data?.message || error);
@@ -76,18 +67,15 @@ export const getQuoteById = async (id) => {
     
     const params = {
       fields: [
-        {"field": {"Name": "Id"}},
+{"field": {"Name": "Id"}},
         {"field": {"Name": "Name"}},
-        {"field": {"Name": "customer_name_c"}},
-        {"field": {"Name": "amount_c"}},
-{"field": {"Name": "status_c"}},
-        {"field": {"Name": "valid_until_c"}},
+        {"field": {"Name": "name_c"}},
+        {"field": {"Name": "contact_id_c"}},
+        {"field": {"Name": "value_c"}},
+        {"field": {"Name": "quote_date_c"}},
+        {"field": {"Name": "status_c"}},
         {"field": {"Name": "discount_c"}},
-        {"field": {"Name": "gst_c"}},
-        {"field": {"Name": "items_c"}},
-        {"field": {"Name": "notes_c"}},
-        {"field": {"Name": "created_at_c"}},
-        {"field": {"Name": "updated_at_c"}}
+        {"field": {"Name": "gst_c"}}
       ]
     };
     
@@ -104,19 +92,14 @@ export const getQuoteById = async (id) => {
       amount: quote.amount_c || 0,
       status: quote.status_c || 'Draft',
       validUntil: quote.valid_until_c || '',
-discount: quote.discount_c || null,
-      gst: quote.gst_c || null,
-      items: (() => {
-        try {
-          return quote.items_c ? JSON.parse(quote.items_c) : [];
-        } catch (error) {
-          console.warn('Failed to parse quote items JSON:', error);
-          return [];
-        }
-      })(),
-      notes: quote.notes_c || '',
-      createdAt: quote.created_at_c || new Date().toISOString(),
-      updatedAt: quote.updated_at_c || new Date().toISOString()
+name: quote.name_c || '',
+      customerName: quote.contact_id_c?.Name || '',
+      contactId: quote.contact_id_c?.Id || null,
+      amount: quote.value_c || 0,
+      status: quote.status_c || 'Draft',
+      validUntil: quote.quote_date_c || '',
+      discount: quote.discount_c || null,
+      gst: quote.gst_c || null
     };
   } catch (error) {
     console.error(`Error fetching quote ${id}:`, error?.response?.data?.message || error);
@@ -131,15 +114,13 @@ try {
       records: [{
         Name: quoteData.customerName || '',
         customer_name_c: quoteData.customerName || '',
-        amount_c: parseFloat(quoteData.amount) || 0,
-status_c: quoteData.status || 'Draft',
-        valid_until_c: quoteData.validUntil || '',
+name_c: quoteData.name || '',
+        contact_id_c: quoteData.contactId || null,
+        value_c: parseFloat(quoteData.amount) || 0,
+        quote_date_c: quoteData.validUntil || '',
+        status_c: quoteData.status || 'Draft',
         discount_c: quoteData.discount || null,
-        gst_c: quoteData.gst || null,
-        items_c: JSON.stringify(quoteData.items || []),
-        notes_c: quoteData.notes || '',
-        created_at_c: new Date().toISOString(),
-        updated_at_c: new Date().toISOString()
+        gst_c: quoteData.gst || null
       }]
     };
     
@@ -174,18 +155,14 @@ status_c: quoteData.status || 'Draft',
           status: createdQuote.status_c || 'Draft',
 validUntil: createdQuote.valid_until_c || '',
           discount: createdQuote.discount_c || null,
-          gst: createdQuote.gst_c || null,
-          items: (() => {
-            try {
-              return createdQuote.items_c ? JSON.parse(createdQuote.items_c) : [];
-            } catch (error) {
-              console.warn('Failed to parse quote items JSON:', error);
-              return [];
-            }
-          })(),
-          notes: createdQuote.notes_c || '',
-          createdAt: createdQuote.created_at_c || new Date().toISOString(),
-          updatedAt: createdQuote.updated_at_c || new Date().toISOString()
+name: createdQuote.name_c || '',
+          customerName: createdQuote.contact_id_c?.Name || '',
+          contactId: createdQuote.contact_id_c?.Id || null,
+          amount: createdQuote.value_c || 0,
+          status: createdQuote.status_c || 'Draft',
+          validUntil: createdQuote.quote_date_c || '',
+          discount: createdQuote.discount_c || null,
+          gst: createdQuote.gst_c || null
         };
       }
     }
@@ -205,15 +182,13 @@ try {
       records: [{
         Id: parseInt(id),
         Name: quoteData.customerName || '',
-        customer_name_c: quoteData.customerName || '',
-amount_c: parseFloat(quoteData.amount) || 0,
+name_c: quoteData.name || '',
+        contact_id_c: quoteData.contactId || null,
+        value_c: parseFloat(quoteData.amount) || 0,
+        quote_date_c: quoteData.validUntil || '',
         status_c: quoteData.status || 'Draft',
         discount_c: quoteData.discount || null,
-        gst_c: quoteData.gst || null,
-        valid_until_c: quoteData.validUntil || '',
-        items_c: JSON.stringify(quoteData.items || []),
-        notes_c: quoteData.notes || '',
-        updated_at_c: new Date().toISOString()
+        gst_c: quoteData.gst || null
       }]
     };
     
@@ -244,21 +219,15 @@ amount_c: parseFloat(quoteData.amount) || 0,
         return {
           Id: updatedQuote.Id,
           customerName: updatedQuote.customer_name_c || '',
-          amount: updatedQuote.amount_c || 0,
-status: updatedQuote.status_c || 'Draft',
-          validUntil: updatedQuote.valid_until_c || '',
+name: updatedQuote.name_c || '',
+          customerName: updatedQuote.contact_id_c?.Name || '',
+          contactId: updatedQuote.contact_id_c?.Id || null,
+          amount: updatedQuote.value_c || 0,
+          status: updatedQuote.status_c || 'Draft',
+          validUntil: updatedQuote.quote_date_c || '',
           discount: updatedQuote.discount_c || null,
           gst: updatedQuote.gst_c || null,
-          items: (() => {
-            try {
-              return updatedQuote.items_c ? JSON.parse(updatedQuote.items_c) : [];
-            } catch (error) {
-              console.warn('Failed to parse quote items JSON:', error);
-              return [];
-            }
-          })(),
-          notes: updatedQuote.notes_c || '',
-          createdAt: updatedQuote.created_at_c || new Date().toISOString(),
+          createdAt: updatedQuote.CreatedOn || new Date().toISOString(),
           updatedAt: updatedQuote.updated_at_c || new Date().toISOString()
         };
       }

@@ -14,8 +14,8 @@ const QuoteModal = ({ quote, onClose, onSave }) => {
     amount: '',
     status: 'Draft',
     validUntil: '',
-items: [],
-    notes: '',
+name: '',
+    contactId: '',
     discount: '',
     gst: ''
   });
@@ -27,11 +27,11 @@ items: [],
     if (quote) {
       setFormData({
         customerName: quote.customerName || '',
-amount: quote.amount?.toString() || '',
+name: quote.name || '',
+        amount: quote.amount?.toString() || '',
         status: quote.status || 'Draft',
         validUntil: quote.validUntil ? quote.validUntil.split('T')[0] : '',
-        items: quote.items || [],
-        notes: quote.notes || '',
+        contactId: quote.contactId || '',
         discount: quote.discount?.toString() || '',
         gst: quote.gst?.toString() || ''
       });
@@ -45,7 +45,11 @@ amount: quote.amount?.toString() || '',
       newErrors.customerName = 'Customer name is required';
     }
 
-if (!formData.amount || parseFloat(formData.amount) <= 0) {
+if (!formData.name || formData.name.trim() === '') {
+      newErrors.name = 'Quote name is required';
+    }
+
+    if (!formData.amount || parseFloat(formData.amount) <= 0) {
       newErrors.amount = 'Valid amount is required';
     }
 
@@ -61,10 +65,10 @@ if (!formData.amount || parseFloat(formData.amount) <= 0) {
   };
 
 // Calculate total amount with discount and GST applied to items
-  const calculateTotal = (items, discount = 0, gst = 0) => {
-    const subtotal = items.reduce((sum, item) => sum + (item.total || 0), 0);
-    const discountAmount = (subtotal * (parseFloat(discount) || 0)) / 100;
-    const discountedAmount = subtotal - discountAmount;
+const calculateTotal = (baseAmount, discount = 0, gst = 0) => {
+    const amount = parseFloat(baseAmount) || 0;
+    const discountAmount = (amount * (parseFloat(discount) || 0)) / 100;
+    const discountedAmount = amount - discountAmount;
     const gstAmount = (discountedAmount * (parseFloat(gst) || 0)) / 100;
     const finalTotal = discountedAmount + gstAmount;
     return Math.round(finalTotal * 100) / 100; // Round to 2 decimal places
@@ -74,16 +78,7 @@ if (!formData.amount || parseFloat(formData.amount) <= 0) {
     setFormData(prev => {
       const updated = { ...prev, [field]: value };
       
-      // Recalculate amount when discount or GST changes
-      if (field === 'discount' || field === 'gst') {
-        const newTotal = calculateTotal(prev.items, 
-          field === 'discount' ? value : prev.discount,
-          field === 'gst' ? value : prev.gst
-        );
-        updated.amount = newTotal.toString();
-      }
-      
-      return updated;
+return updated;
     });
     
     if (errors[field]) {
@@ -106,10 +101,8 @@ if (!formData.amount || parseFloat(formData.amount) <= 0) {
         items: [...prev.items, item]
       }));
       
-      // Update total amount
-const updatedItems = [...formData.items, item];
-      const newTotal = calculateTotal(updatedItems, formData.discount, formData.gst);
-      setFormData(prev => ({ ...prev, items: updatedItems, amount: newTotal.toString() }));
+// Quote item functionality removed as items are not part of quote_c table schema
+      console.log('Add item functionality requires quote_item_c table integration');
       
       setNewItem({ description: '', quantity: 1, price: '' });
     }
@@ -120,10 +113,9 @@ const updatedItems = [...formData.items, item];
     setFormData(prev => ({ ...prev, items: updatedItems }));
     
     // Update total amount
-const newTotal = calculateTotal(updatedItems, formData.discount, formData.gst);
-    setFormData(prev => ({ ...prev, items: updatedItems, amount: newTotal.toString() }));
+// Quote item functionality removed as items are not part of quote_c table schema
+    console.log('Remove item functionality requires quote_item_c table integration');
   };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     
@@ -133,10 +125,11 @@ const newTotal = calculateTotal(updatedItems, formData.discount, formData.gst);
 
     setLoading(true);
     try {
-      await onSave({
-...formData,
+await onSave({
+        ...formData,
         amount: parseFloat(formData.amount),
         validUntil: formData.validUntil || null,
+        contactId: formData.contactId ? parseInt(formData.contactId) : null,
         discount: formData.discount ? parseFloat(formData.discount) : null,
         gst: formData.gst ? parseFloat(formData.gst) : null
       });
@@ -174,21 +167,34 @@ const newTotal = calculateTotal(updatedItems, formData.discount, formData.gst);
         </div>
 
         <div className="p-6 overflow-y-auto max-h-[calc(90vh-140px)]">
-          <form onSubmit={handleSubmit} className="space-y-6">
+<form onSubmit={handleSubmit} className="space-y-6">
             {/* Basic Information */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <Label htmlFor="customerName">Customer Name *</Label>
+                <Label htmlFor="name">Quote Name *</Label>
+                <Input
+                  id="name"
+                  value={formData.name}
+                  onChange={(e) => handleInputChange('name', e.target.value)}
+                  error={errors.name}
+                  placeholder="Enter quote name"
+                />
+                {errors.name && (
+                  <p className="mt-1 text-sm text-error-600">{errors.name}</p>
+                )}
+              </div>
+
+              <div>
+                <Label htmlFor="customerName">Customer Name</Label>
                 <Input
                   id="customerName"
                   value={formData.customerName}
                   onChange={(e) => handleInputChange('customerName', e.target.value)}
                   error={errors.customerName}
                   placeholder="Enter customer name"
+                  disabled
                 />
-                {errors.customerName && (
-                  <p className="mt-1 text-sm text-error-600">{errors.customerName}</p>
-                )}
+                <p className="mt-1 text-xs text-gray-500">Contact lookup integration needed</p>
               </div>
 
               <div>
@@ -224,16 +230,48 @@ const newTotal = calculateTotal(updatedItems, formData.discount, formData.gst);
               </div>
 
               <div>
-                <Label htmlFor="validUntil">Valid Until</Label>
+                <Label htmlFor="validUntil">Quote Date</Label>
                 <Input
                   id="validUntil"
                   type="date"
                   value={formData.validUntil}
                   onChange={(e) => handleInputChange('validUntil', e.target.value)}
-                  placeholder="Select expiry date"
+                  placeholder="Select quote date"
                 />
               </div>
-</div>
+
+              <div>
+                <Label htmlFor="discount">Discount (%)</Label>
+                <Input
+                  id="discount"
+                  type="number"
+                  step="0.01"
+                  value={formData.discount}
+                  onChange={(e) => handleInputChange('discount', e.target.value)}
+                  error={errors.discount}
+                  placeholder="0.00"
+                />
+                {errors.discount && (
+                  <p className="mt-1 text-sm text-error-600">{errors.discount}</p>
+                )}
+              </div>
+
+              <div>
+                <Label htmlFor="gst">GST (%)</Label>
+                <Input
+                  id="gst"
+                  type="number"
+                  step="0.01"
+                  value={formData.gst}
+                  onChange={(e) => handleInputChange('gst', e.target.value)}
+                  error={errors.gst}
+                  placeholder="0.00"
+                />
+                {errors.gst && (
+                  <p className="mt-1 text-sm text-error-600">{errors.gst}</p>
+                )}
+              </div>
+            </div>
 
             <div className="grid grid-cols-2 gap-4">
               <FormField

@@ -92,9 +92,10 @@ const QuotePage = () => {
     }
   };
 
-  const filteredQuotes = quotes.filter(quote => 
-    quote.customerName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    quote.status.toLowerCase().includes(searchTerm.toLowerCase()) ||
+const filteredQuotes = quotes.filter(quote => 
+    (quote.name || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (quote.customerName || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (quote.status || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
     quote.amount.toString().includes(searchTerm)
   );
 
