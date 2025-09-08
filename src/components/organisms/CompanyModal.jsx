@@ -25,9 +25,9 @@ const CompanyModal = ({
   useEffect(() => {
     if (isOpen) {
       if (company) {
-        setFormData({
+setFormData({
           name: company.name || '',
-          industryId: company.industryId || '',
+          industryId: company.industryId ? String(company.industryId) : '',
           website: company.website || '',
           address: company.address || '',
           notes: company.notes || ''
@@ -145,7 +145,7 @@ const CompanyModal = ({
             </FormField>
 
             {/* Website */}
-<FormField
+            <FormField
               label="Website"
               error={errors.website}
               value={formData.website}
@@ -156,32 +156,33 @@ const CompanyModal = ({
           </div>
 
           {/* Address */}
-          <FormField
-            label="Address"
-            error={errors.address}
-          >
-            <textarea
-              value={formData.address}
-              onChange={(e) => handleChange('address', e.target.value)}
-              placeholder="Enter company address"
-              rows={3}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent resize-none"
-            />
-          </FormField>
+{/* Address */}
+            <FormField
+              label="Address"
+              error={errors.address}
+            >
+              <textarea
+                value={formData.address}
+                onChange={(e) => handleChange('address', e.target.value)}
+                placeholder="Enter company address"
+                rows={3}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent resize-none"
+              />
+            </FormField>
 
-          {/* Notes */}
-          <FormField
-            label="Notes"
-            error={errors.notes}
-          >
-            <textarea
-              value={formData.notes}
-              onChange={(e) => handleChange('notes', e.target.value)}
-              placeholder="Additional notes about this company"
-              rows={3}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent resize-none"
-            />
-          </FormField>
+            {/* Notes */}
+            <FormField
+              label="Notes"
+              error={errors.notes}
+            >
+              <textarea
+                value={formData.notes}
+                onChange={(e) => handleChange('notes', e.target.value)}
+                placeholder="Additional notes about this company"
+                rows={3}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent resize-none"
+              />
+            </FormField>
 
           {/* Action Buttons */}
           <div className="flex justify-end space-x-3 pt-4 border-t">

@@ -1,23 +1,20 @@
-import React, { useState, useEffect, useMemo } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import React, { useEffect, useMemo, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import ApperIcon from "@/components/ApperIcon";
-import Button from "@/components/atoms/Button";
-import Badge from "@/components/atoms/Badge";
-import DealCard from "@/components/molecules/DealCard";
-import Loading from "@/components/ui/Loading";
 import Error from "@/components/ui/Error";
+import Loading from "@/components/ui/Loading";
+import DealCard from "@/components/molecules/DealCard";
+import Badge from "@/components/atoms/Badge";
+import Button from "@/components/atoms/Button";
 import CompanyModal from "@/components/organisms/CompanyModal";
-import { getCompanyById, updateCompany } from "@/services/api/companyService";
 import { getDeals } from "@/services/api/dealService";
+import { getCompanyById, updateCompany } from "@/services/api/companyService";
 import { getContacts } from "@/services/api/contactService";
-import { format } from "date-fns";
-
 const CompanyProfile = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  
-  const [company, setCompany] = useState(null);
+const [company, setCompany] = useState(null);
   const [deals, setDeals] = useState([]);
   const [contacts, setContacts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -31,7 +28,7 @@ const CompanyProfile = () => {
     }
   }, [id]);
 
-  const loadCompanyData = async () => {
+const loadCompanyData = async () => {
     try {
       setLoading(true);
       setError(null);
@@ -45,17 +42,17 @@ const CompanyProfile = () => {
       setCompany(companyData);
 
       // Load related data
-const [allDeals, allContacts] = await Promise.all([
+      const [allDeals, allContacts] = await Promise.all([
         getDeals(),
         getContacts()
       ]);
 
       // Filter deals and contacts for this company
-      const companyContacts = allContacts.filter(contact => 
+      const companyContacts = (allContacts || []).filter(contact => 
         contact.companyId === parseInt(id)
       );
       
-      const companyDeals = allDeals.filter(deal => 
+      const companyDeals = (allDeals || []).filter(deal => 
         deal.contactId && companyContacts.some(contact => 
           contact.Id === deal.contactId
         )
@@ -66,19 +63,23 @@ const [allDeals, allContacts] = await Promise.all([
     } catch (err) {
       setError('Failed to load company data');
       console.error('Error loading company data:', err);
+      setDeals([]);
+      setContacts([]);
     } finally {
       setLoading(false);
     }
   };
 
-  const handleEditCompany = async (companyData) => {
+const handleEditCompany = async (companyData) => {
     setIsSubmitting(true);
     try {
       const updatedCompany = await updateCompany(id, companyData);
       if (updatedCompany) {
-        setCompany(updatedCompany);
+        setCompany({ ...updatedCompany, contactCount: company.contactCount, dealCount: company.dealCount });
         setShowEditModal(false);
         toast.success('Company updated successfully');
+      } else {
+        toast.error('Failed to update company');
       }
     } catch (error) {
       console.error('Error updating company:', error);
@@ -88,22 +89,7 @@ const [allDeals, allContacts] = await Promise.all([
     }
   };
 
-  // Calculate deal statistics
-  const dealStats = useMemo(() => {
-    const totalValue = deals.reduce((sum, deal) => sum + (deal.value || 0), 0);
-    const activeDeals = deals.filter(deal => deal.stage !== 'Closed').length;
-    const closedDeals = deals.filter(deal => deal.stage === 'Closed').length;
-    const averageDealSize = deals.length > 0 ? totalValue / deals.length : 0;
-
-    return {
-      totalValue,
-      activeDeals,
-      closedDeals,
-      averageDealSize,
-      totalDeals: deals.length
-    };
-  }, [deals]);
-
+  // Format currency helper
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
@@ -113,7 +99,24 @@ const [allDeals, allContacts] = await Promise.all([
     }).format(amount || 0);
   };
 
-  if (loading) {
+  // Calculate deal statistics
+  const dealStats = useMemo(() => {
+    const totalValue = deals.reduce((sum, deal) => sum + (deal.amount || 0), 0);
+    const totalDeals = deals.length;
+    const activeDeals = deals.filter(deal => deal.status !== 'closed-won' && deal.status !== 'closed-lost').length;
+    const closedDeals = deals.filter(deal => deal.status === 'closed-won' || deal.status === 'closed-lost').length;
+    const averageDealSize = totalDeals > 0 ? totalValue / totalDeals : 0;
+
+    return {
+      totalValue,
+      totalDeals,
+      activeDeals,
+      closedDeals,
+      averageDealSize
+    };
+  }, [deals]);
+
+if (loading) {
     return <Loading />;
   }
 
@@ -127,7 +130,6 @@ const [allDeals, allContacts] = await Promise.all([
       />
     );
   }
-
   if (!company) {
     return (
       <div className="text-center py-12">
@@ -144,7 +146,7 @@ const [allDeals, allContacts] = await Promise.all([
     );
   }
 
-  return (
+return (
     <div className="space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
@@ -166,16 +168,15 @@ const [allDeals, allContacts] = await Promise.all([
           Edit Company
         </Button>
       </div>
-
       {/* Company Info Card */}
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
         <div className="flex items-start justify-between mb-6">
           <div className="flex items-center space-x-4">
             <div className="h-16 w-16 rounded-full bg-gradient-to-br from-primary-400 to-primary-600 flex items-center justify-center text-white text-xl font-bold">
-              {company.name.charAt(0).toUpperCase()}
+              {(company.name || '').charAt(0).toUpperCase()}
             </div>
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">{company.name}</h1>
+              <h1 className="text-3xl font-bold text-gray-900">{company.name || 'Unnamed Company'}</h1>
               {company.industry && (
                 <Badge variant="secondary" className="mt-2">
                   {company.industry}
@@ -204,18 +205,23 @@ const [allDeals, allContacts] = await Promise.all([
             <div>
               <label className="text-sm font-medium text-gray-500 block mb-1">Address</label>
               <p className="text-gray-900">{company.address}</p>
-</div>
+            </div>
           )}
 
           <div>
             <label className="text-sm font-medium text-gray-500 block mb-1">Contacts</label>
-            <p className="text-2xl font-bold text-gray-900">{contacts.length}</p>
+            <p className="text-2xl font-bold text-gray-900">{company.contactCount || 0}</p>
+          </div>
+
+          <div>
+            <label className="text-sm font-medium text-gray-500 block mb-1">Deals</label>
+            <p className="text-2xl font-bold text-gray-900">{company.dealCount || 0}</p>
           </div>
 
           <div>
             <label className="text-sm font-medium text-gray-500 block mb-1">Account Value</label>
             <p className="text-2xl font-bold text-success-600">
-              {formatCurrency(deals.reduce((sum, deal) => sum + (deal.amount || 0), 0))}
+              {formatCurrency(dealStats.totalValue)}
             </p>
           </div>
         </div>
@@ -226,8 +232,7 @@ const [allDeals, allContacts] = await Promise.all([
             <p className="text-gray-700 whitespace-pre-wrap">{company.notes}</p>
           </div>
         )}
-      </div>
-
+</div>
       {/* Deal Statistics */}
       <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
         <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
@@ -251,8 +256,7 @@ const [allDeals, allContacts] = await Promise.all([
           <div className="text-2xl font-bold text-gray-900">{formatCurrency(dealStats.averageDealSize)}</div>
         </div>
       </div>
-
-      {/* Deals Section */}
+{/* Deals Section */}
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl font-semibold text-gray-900">Deals</h2>
@@ -281,8 +285,7 @@ const [allDeals, allContacts] = await Promise.all([
           </div>
         )}
       </div>
-
-      {/* Contacts Section */}
+{/* Contacts Section */}
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-xl font-semibold text-gray-900">Contacts</h2>
@@ -305,7 +308,7 @@ const [allDeals, allContacts] = await Promise.all([
               <div key={contact.Id} className="flex items-center justify-between p-3 bg-gray-50 rounded-md">
                 <div className="flex items-center space-x-3">
                   <div className="h-8 w-8 rounded-full bg-gradient-to-br from-primary-400 to-primary-600 flex items-center justify-center text-white text-sm font-medium">
-                    {contact.firstName.charAt(0)}{contact.lastName.charAt(0)}
+                    {(contact.firstName || '').charAt(0)}{(contact.lastName || '').charAt(0)}
                   </div>
                   <div>
                     <div className="font-medium text-gray-900">
@@ -321,7 +324,7 @@ const [allDeals, allContacts] = await Promise.all([
             ))}
           </div>
         )}
-      </div>
+</div>
 
       {/* Edit Company Modal */}
       <CompanyModal

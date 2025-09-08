@@ -1,5 +1,4 @@
 import { toast } from "react-toastify";
-import React from "react";
 
 // Initialize ApperClient
 const getApperClient = () => {
@@ -35,7 +34,7 @@ export const getCompanies = async (searchTerm = '') => {
         {"FieldName": "name_c", "Operator": "Contains", "Values": [searchTerm], "Include": true}
       ];
     }
-    
+
     const response = await apperClient.fetchRecords(tableName, params);
     
     if (!response.success) {
@@ -48,7 +47,7 @@ export const getCompanies = async (searchTerm = '') => {
       return [];
     }
     
-// Get additional relationship data
+    // Get additional relationship data
     const [allContacts, allDeals] = await Promise.all([
       getApperClient().fetchRecords('contact_c', {
         fields: [{"field": {"Name": "Id"}}, {"field": {"Name": "company_c"}}]
@@ -87,6 +86,7 @@ export const getCompanies = async (searchTerm = '') => {
     });
   } catch (error) {
     console.error("Error fetching companies:", error?.response?.data?.message || error);
+    toast.error("Failed to load companies");
     return [];
   }
 };
@@ -94,6 +94,7 @@ export const getCompanies = async (searchTerm = '') => {
 export const getCompanyById = async (id) => {
   try {
     const apperClient = getApperClient();
+    
     const params = {
       fields: [
         {"field": {"Name": "Id"}},
@@ -105,15 +106,16 @@ export const getCompanyById = async (id) => {
         {"field": {"Name": "notes_c"}}
       ]
     };
-    
+
     const response = await apperClient.getRecordById(tableName, parseInt(id), params);
     
-    if (!response?.data) {
+    if (!response?.success || !response?.data) {
       return null;
     }
     
     const company = response.data;
-// Get relationship counts for this specific company
+    
+    // Get relationship counts for this specific company
     const [contactsResponse, dealsResponse] = await Promise.all([
       getApperClient().fetchRecords('contact_c', {
         fields: [{"field": {"Name": "Id"}}],
@@ -153,9 +155,9 @@ export const getCompanyById = async (id) => {
 export const createCompany = async (companyData) => {
   try {
     const apperClient = getApperClient();
+    
     const params = {
       records: [{
-        Name: companyData.name || '',
         name_c: companyData.name || '',
         industry_c: companyData.industryId ? parseInt(companyData.industryId) : null,
         website_c: companyData.website || '',
@@ -184,18 +186,21 @@ export const createCompany = async (companyData) => {
           }
           if (record.message) toast.error(record.message);
         });
+        return null;
       }
       
       if (successful.length > 0) {
         const createdCompany = successful[0].data;
         return {
           Id: createdCompany.Id,
-          name: createdCompany.name_c || createdCompany.Name || '',
+          name: createdCompany.name_c || '',
           industry: createdCompany.industry_c?.Name || '',
           industryId: createdCompany.industry_c?.Id || null,
           website: createdCompany.website_c || '',
           address: createdCompany.address_c || '',
-          notes: createdCompany.notes_c || ''
+          notes: createdCompany.notes_c || '',
+          contactCount: 0,
+          dealCount: 0
         };
       }
     }
@@ -203,6 +208,7 @@ export const createCompany = async (companyData) => {
     return null;
   } catch (error) {
     console.error("Error creating company:", error?.response?.data?.message || error);
+    toast.error("Failed to create company");
     return null;
   }
 };
@@ -214,7 +220,6 @@ export const updateCompany = async (id, companyData) => {
     const params = {
       records: [{
         Id: parseInt(id),
-        Name: companyData.name || '',
         name_c: companyData.name || '',
         industry_c: companyData.industryId ? parseInt(companyData.industryId) : null,
         website_c: companyData.website || '',
@@ -243,13 +248,14 @@ export const updateCompany = async (id, companyData) => {
           }
           if (record.message) toast.error(record.message);
         });
+        return null;
       }
       
       if (successful.length > 0) {
         const updatedCompany = successful[0].data;
         return {
           Id: updatedCompany.Id,
-          name: updatedCompany.name_c || updatedCompany.Name || '',
+          name: updatedCompany.name_c || '',
           industry: updatedCompany.industry_c?.Name || '',
           industryId: updatedCompany.industry_c?.Id || null,
           website: updatedCompany.website_c || '',
@@ -262,6 +268,7 @@ export const updateCompany = async (id, companyData) => {
     return null;
   } catch (error) {
     console.error("Error updating company:", error?.response?.data?.message || error);
+    toast.error("Failed to update company");
     return null;
   }
 };
@@ -291,14 +298,16 @@ export const deleteCompany = async (id) => {
         failed.forEach(record => {
           if (record.message) toast.error(record.message);
         });
+        return false;
       }
       
-      return successful.length === 1;
+      return successful.length > 0;
     }
     
     return false;
   } catch (error) {
     console.error("Error deleting company:", error?.response?.data?.message || error);
+    toast.error("Failed to delete company");
     return false;
   }
 };

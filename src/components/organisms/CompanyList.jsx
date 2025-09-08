@@ -144,21 +144,21 @@ const CompanyList = ({
                 </tr>
               ) : (
                 sortedCompanies.map((company) => (
-                  <tr 
+<tr 
                     key={company.Id} 
                     className="hover:bg-gray-50 transition-colors"
                   >
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
                         <div className="h-10 w-10 rounded-full bg-gradient-to-br from-primary-400 to-primary-600 flex items-center justify-center text-white font-semibold">
-                          {company.name.charAt(0).toUpperCase()}
+                          {(company.name || '').charAt(0).toUpperCase()}
                         </div>
                         <div className="ml-4">
                           <div 
                             className="text-sm font-medium text-gray-900 hover:text-primary-600 cursor-pointer"
                             onClick={() => onViewProfile?.(company.Id)}
                           >
-                            {company.name}
+                            {company.name || 'Unnamed Company'}
                           </div>
                           {company.notes && (
                             <div className="text-sm text-gray-500 line-clamp-1">
@@ -191,7 +191,7 @@ const CompanyList = ({
                       <div className="text-sm text-gray-900 line-clamp-2">
                         {company.address || 'No address'}
                       </div>
-</td>
+                    </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center space-x-4 text-sm text-gray-500">
                         <div className="flex items-center">
