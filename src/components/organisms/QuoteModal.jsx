@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { cn } from "@/utils/cn";
+import { isValid } from "date-fns";
 import ApperIcon from "@/components/ApperIcon";
 import FormField from "@/components/molecules/FormField";
 import Input from "@/components/atoms/Input";
 import Button from "@/components/atoms/Button";
 import Label from "@/components/atoms/Label";
-
+import { cn } from "@/utils/cn";
 
 const QuoteModal = ({ quote, onClose, onSave }) => {
   const [formData, setFormData] = useState({
@@ -29,12 +29,12 @@ useEffect(() => {
       setFormData({
         customerName: quote.customerName || '',
         name: quote.name || '',
-amount: quote.amount?.toString() || '',
+        amount: quote.amount?.toString() || '',
         status: quote.status || 'Draft',
-        validUntil: quote.validUntil && quote.validUntil.includes('T') ? quote.validUntil.split('T')[0] : (quote.validUntil || ''),
-        contactId: quote.contactId || '',
+        contactId: quote.contactId?.toString() || '',
         discount: quote.discount?.toString() || '',
         gst: quote.gst?.toString() || '',
+        validUntil: quote.validUntil && isValid(new Date(quote.validUntil)) && quote.validUntil.includes('T') ? quote.validUntil.split('T')[0] : (quote.validUntil || ''),
         items: quote.items || []
       });
     }
@@ -273,32 +273,7 @@ await onSave({
                   <p className="mt-1 text-sm text-error-600">{errors.gst}</p>
                 )}
               </div>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <FormField
-                label="Discount"
-                type="number"
-                step="0.01"
-                min="0"
-                placeholder="0.00"
-                value={formData.discount}
-                onChange={(e) => handleInputChange('discount', e.target.value)}
-                error={errors.discount}
-              />
-              
-              <FormField
-                label="GST"
-                type="number"
-                step="0.01"
-                min="0"
-                placeholder="0.00"
-                value={formData.gst}
-                onChange={(e) => handleInputChange('gst', e.target.value)}
-                error={errors.gst}
-              />
-            </div>
-
+</div>
             {/* Quote Items */}
             <div>
               <Label>Quote Items</Label>

@@ -1,8 +1,8 @@
 import React from "react";
+import { format, isValid } from "date-fns";
 import ApperIcon from "@/components/ApperIcon";
-import Button from "@/components/atoms/Button";
 import Badge from "@/components/atoms/Badge";
-import { format } from "date-fns";
+import Button from "@/components/atoms/Button";
 import { cn } from "@/utils/cn";
 
 const DealCard = ({ deal, onDragStart, onEdit, onDelete, isDragged }) => {
@@ -21,7 +21,8 @@ const DealCard = ({ deal, onDragStart, onEdit, onDelete, isDragged }) => {
     return "text-red-600 bg-red-50";
   };
 
-const isOverdue = deal.expectedCloseDate && new Date(deal.expectedCloseDate) < new Date() && deal.stage !== "Closed";
+  const isOverdue = deal.expectedCloseDate && isValid(new Date(deal.expectedCloseDate)) && new Date(deal.expectedCloseDate) < new Date() && deal.stage !== "Closed";
+
   return (
     <div
       draggable
@@ -91,11 +92,11 @@ const isOverdue = deal.expectedCloseDate && new Date(deal.expectedCloseDate) < n
             isOverdue ? "text-red-500" : "text-gray-400"
           )} 
         />
-        <span className={cn(
+<span className={cn(
           "text-sm",
-          isOverdue ? "text-red-600 font-medium" : "text-gray-600"
+          isOverdue ? "text-red-600" : "text-gray-600"
         )}>
-{deal.expectedCloseDate ? format(new Date(deal.expectedCloseDate), "MMM d, yyyy") : 'No date set'}
+          {deal.expectedCloseDate && isValid(new Date(deal.expectedCloseDate)) ? format(new Date(deal.expectedCloseDate), "MMM d, yyyy") : 'No date set'}
         </span>
         {isOverdue && (
           <Badge variant="error" className="text-xs">
