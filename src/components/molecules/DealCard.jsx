@@ -21,8 +21,7 @@ const DealCard = ({ deal, onDragStart, onEdit, onDelete, isDragged }) => {
     return "text-red-600 bg-red-50";
   };
 
-  const isOverdue = new Date(deal.expectedCloseDate) < new Date() && deal.stage !== "Closed";
-
+const isOverdue = deal.expectedCloseDate && new Date(deal.expectedCloseDate) < new Date() && deal.stage !== "Closed";
   return (
     <div
       draggable
@@ -96,7 +95,7 @@ const DealCard = ({ deal, onDragStart, onEdit, onDelete, isDragged }) => {
           "text-sm",
           isOverdue ? "text-red-600 font-medium" : "text-gray-600"
         )}>
-          {format(new Date(deal.expectedCloseDate), "MMM d, yyyy")}
+{deal.expectedCloseDate ? format(new Date(deal.expectedCloseDate), "MMM d, yyyy") : 'No date set'}
         </span>
         {isOverdue && (
           <Badge variant="error" className="text-xs">

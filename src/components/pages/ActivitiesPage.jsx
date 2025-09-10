@@ -309,9 +309,9 @@ const ActivitiesPage = () => {
                           <Badge className={getStatusColor(activity.activityType)}>
                             {activity.activityType}
                           </Badge>
-                          <div className="flex items-center gap-1 text-sm text-gray-500" title={priorityInfo.title}>
+<div className="flex items-center gap-1 text-sm text-gray-500" title={priorityInfo.title}>
                             <ApperIcon name={priorityInfo.icon} size={16} className={priorityInfo.color} />
-                            {activity.activityDate && format(new Date(activity.activityDate), 'MMM dd, yyyy HH:mm')}
+                            {activity.activityDate ? format(new Date(activity.activityDate), 'MMM dd, yyyy HH:mm') : 'No date set'}
                           </div>
                         </div>
                         
@@ -349,9 +349,8 @@ const ActivitiesPage = () => {
                             ))}
                           </div>
                         )}
-                        
-                        <div className="text-xs text-gray-500">
-                          Created {activity.createdOn && format(new Date(activity.createdOn), 'MMM dd, yyyy')}
+<div className="text-xs text-gray-500">
+                          Created {activity.createdOn ? format(new Date(activity.createdOn), 'MMM dd, yyyy') : 'Unknown date'}
                           {activity.createdBy && ` by ${activity.createdBy}`}
                         </div>
                       </div>

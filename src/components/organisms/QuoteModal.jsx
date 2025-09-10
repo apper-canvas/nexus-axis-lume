@@ -29,9 +29,9 @@ useEffect(() => {
       setFormData({
         customerName: quote.customerName || '',
         name: quote.name || '',
-        amount: quote.amount?.toString() || '',
+amount: quote.amount?.toString() || '',
         status: quote.status || 'Draft',
-        validUntil: quote.validUntil ? quote.validUntil.split('T')[0] : '',
+        validUntil: quote.validUntil && quote.validUntil.includes('T') ? quote.validUntil.split('T')[0] : (quote.validUntil || ''),
         contactId: quote.contactId || '',
         discount: quote.discount?.toString() || '',
         gst: quote.gst?.toString() || '',

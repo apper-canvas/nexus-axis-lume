@@ -272,9 +272,9 @@ console.error("Error updating task status:", error?.response?.data?.message || e
                     
                     <div className="flex items-center space-x-4 text-sm text-gray-500">
                       {task.dueDate && (
-                        <div className="flex items-center space-x-1">
+<div className="flex items-center space-x-1">
                           <ApperIcon name="Calendar" size={14} />
-                          <span>Due: {format(new Date(task.dueDate), "MMM d, yyyy")}</span>
+                          <span>Due: {task.dueDate ? format(new Date(task.dueDate), "MMM d, yyyy") : 'No date set'}</span>
                         </div>
                       )}
                       {task.assignedToUserName && (
