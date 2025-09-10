@@ -6,7 +6,7 @@ import FormField from "@/components/molecules/FormField";
 import Input from "@/components/atoms/Input";
 import Button from "@/components/atoms/Button";
 import Label from "@/components/atoms/Label";
-import { getContacts } from "@/services/api/contactService";
+
 
 const QuoteModal = ({ quote, onClose, onSave }) => {
   const [formData, setFormData] = useState({
@@ -23,29 +23,8 @@ const QuoteModal = ({ quote, onClose, onSave }) => {
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const [newItem, setNewItem] = useState({ description: '', quantity: 1, price: '' });
-  const [contacts, setContacts] = useState([]);
-  const [contactsLoading, setContactsLoading] = useState(true);
-  const [contactDropdownOpen, setContactDropdownOpen] = useState(false);
-  const [contactSearchTerm, setContactSearchTerm] = useState('');
-// Load contacts on component mount
-  useEffect(() => {
-    const loadContacts = async () => {
-      setContactsLoading(true);
-      try {
-        const contactsData = await getContacts();
-        setContacts(contactsData);
-      } catch (error) {
-        console.error('Error loading contacts:', error);
-        toast.error('Failed to load contacts');
-      } finally {
-        setContactsLoading(false);
-      }
-    };
 
-    loadContacts();
-  }, []);
-
-  useEffect(() => {
+useEffect(() => {
     if (quote) {
       setFormData({
         customerName: quote.customerName || '',
@@ -61,11 +40,11 @@ const QuoteModal = ({ quote, onClose, onSave }) => {
     }
   }, [quote]);
 
-const validateForm = () => {
+  const validateForm = () => {
     const newErrors = {};
 
-    if (!formData.contactId) {
-      newErrors.contactId = 'Please select a contact';
+    if (!formData.customerName.trim()) {
+      newErrors.customerName = 'Customer name is required';
     }
 
 if (!formData.name || formData.name.trim() === '') {
@@ -97,44 +76,17 @@ const calculateTotal = (baseAmount, discount = 0, gst = 0) => {
     return Math.round(finalTotal * 100) / 100; // Round to 2 decimal places
   };
 
-const handleContactSelect = (contact) => {
-    setFormData(prev => ({
-      ...prev,
-      contactId: contact.Id.toString(),
-      customerName: `${contact.firstName} ${contact.lastName}`.trim()
-    }));
-    
-    if (errors.contactId) {
-      setErrors(prev => ({ ...prev, contactId: '' }));
-    }
-    
-    setContactDropdownOpen(false);
-    setContactSearchTerm('');
-  };
-
   const handleInputChange = (field, value) => {
     setFormData(prev => {
       const updated = { ...prev, [field]: value };
       
-      return updated;
+return updated;
     });
     
     if (errors[field]) {
       setErrors(prev => ({ ...prev, [field]: '' }));
     }
   };
-
-  // Filter contacts based on search term
-  const filteredContacts = contacts.filter(contact => {
-    const fullName = `${contact.firstName} ${contact.lastName}`.toLowerCase();
-    const email = contact.email.toLowerCase();
-    const company = contact.company.toLowerCase();
-    const searchLower = contactSearchTerm.toLowerCase();
-    
-    return fullName.includes(searchLower) || 
-           email.includes(searchLower) || 
-           company.includes(searchLower);
-  });
 
   const handleAddItem = () => {
     if (newItem.description && newItem.price) {
@@ -166,7 +118,7 @@ const handleContactSelect = (contact) => {
 // Quote item functionality removed as items are not part of quote_c table schema
     console.log('Remove item functionality requires quote_item_c table integration');
   };
-const handleSubmit = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     
     if (!validateForm()) {
@@ -175,7 +127,7 @@ const handleSubmit = async (e) => {
 
     setLoading(true);
     try {
-      await onSave({
+await onSave({
         ...formData,
         amount: parseFloat(formData.amount),
         validUntil: formData.validUntil || null,
@@ -183,7 +135,7 @@ const handleSubmit = async (e) => {
         discount: formData.discount ? parseFloat(formData.discount) : null,
         gst: formData.gst ? parseFloat(formData.gst) : null
       });
-    } catch (error) {
+} catch (error) {
       console.error('Error saving quote:', error?.response?.data?.message || error);
       toast.error('Failed to save quote');
     } finally {
@@ -216,8 +168,8 @@ const handleSubmit = async (e) => {
           </Button>
         </div>
 
-<div className="p-6 overflow-y-auto max-h-[calc(90vh-140px)]">
-          <form onSubmit={handleSubmit} className="space-y-6">
+        <div className="p-6 overflow-y-auto max-h-[calc(90vh-140px)]">
+<form onSubmit={handleSubmit} className="space-y-6">
             {/* Basic Information */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
@@ -234,74 +186,17 @@ const handleSubmit = async (e) => {
                 )}
               </div>
 
-              <div className="relative">
-                <Label htmlFor="contactSelect">Contact *</Label>
-                {contactsLoading ? (
-                  <div className="flex items-center justify-center h-10 border border-gray-300 rounded-md bg-gray-50">
-                    <ApperIcon name="Loader2" className="w-4 h-4 animate-spin text-gray-500" />
-                    <span className="ml-2 text-sm text-gray-500">Loading contacts...</span>
-                  </div>
-                ) : (
-                  <div className="relative">
-                    <div
-                      className={cn(
-                        "flex items-center justify-between w-full px-3 py-2 text-left border rounded-md cursor-pointer",
-                        "hover:border-gray-400 focus:ring-2 focus:ring-primary-500 focus:border-primary-500",
-                        errors.contactId ? "border-error-500" : "border-gray-300",
-                        contactDropdownOpen && "border-primary-500 ring-2 ring-primary-500"
-                      )}
-                      onClick={() => setContactDropdownOpen(!contactDropdownOpen)}
-                    >
-                      <span className={cn(
-                        formData.customerName ? "text-gray-900" : "text-gray-500"
-                      )}>
-                        {formData.customerName || "Select a contact"}
-                      </span>
-                      <ApperIcon 
-                        name={contactDropdownOpen ? "ChevronUp" : "ChevronDown"} 
-                        className="w-4 h-4 text-gray-400" 
-                      />
-                    </div>
-                    
-                    {contactDropdownOpen && (
-                      <div className="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg">
-                        <div className="p-2">
-                          <Input
-                            value={contactSearchTerm}
-                            onChange={(e) => setContactSearchTerm(e.target.value)}
-                            placeholder="Search contacts..."
-                            className="w-full"
-                          />
-                        </div>
-                        <div className="max-h-60 overflow-y-auto">
-                          {filteredContacts.length === 0 ? (
-                            <div className="px-3 py-2 text-sm text-gray-500">
-                              {contactSearchTerm ? 'No contacts found' : 'No contacts available'}
-                            </div>
-                          ) : (
-                            filteredContacts.map((contact) => (
-                              <div
-                                key={contact.Id}
-                                className="px-3 py-2 cursor-pointer hover:bg-gray-50 border-b border-gray-100 last:border-b-0"
-                                onClick={() => handleContactSelect(contact)}
-                              >
-                                <div className="font-medium text-gray-900">
-                                  {`${contact.firstName} ${contact.lastName}`.trim()}
-                                </div>
-                                <div className="text-sm text-gray-500">
-                                  {contact.email} {contact.company && `• ${contact.company}`}
-                                </div>
-                              </div>
-                            ))
-                          )}
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                )}
-                {errors.contactId && (
-                  <p className="mt-1 text-sm text-error-600">{errors.contactId}</p>
-                )}
+              <div>
+                <Label htmlFor="customerName">Customer Name</Label>
+                <Input
+                  id="customerName"
+                  value={formData.customerName}
+                  onChange={(e) => handleInputChange('customerName', e.target.value)}
+                  error={errors.customerName}
+                  placeholder="Enter customer name"
+                  disabled
+                />
+                <p className="mt-1 text-xs text-gray-500">Contact lookup integration needed</p>
               </div>
 
               <div>
