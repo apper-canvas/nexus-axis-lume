@@ -1,15 +1,17 @@
-import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import { format, isValid } from "date-fns";
+import React, { useState, useEffect } from "react";
 import ApperIcon from "@/components/ApperIcon";
-import FormField from "@/components/molecules/FormField";
 import Button from "@/components/atoms/Button";
-import { createTask } from "@/services/api/taskService";
+import FormField from "@/components/molecules/FormField";
 import { createDeal, updateDeal } from "@/services/api/dealService";
-import { createComment, deleteComment, getComments, updateComment } from "@/services/api/commentService";
 import { createFollowUpReminder } from "@/services/api/followUpReminderService";
+import { createTask } from "@/services/api/taskService";
+import { getComments, createComment, updateComment, deleteComment } from "@/services/api/commentService";
+import { useSelector } from 'react-redux';
+import { format } from 'date-fns';
 import { cn } from "@/utils/cn";
+
 const PIPELINE_STAGES = [
+  { id: "Lead", title: "Lead" },
   { id: "Qualified", title: "Qualified" },
   { id: "Proposal", title: "Proposal" },
   { id: "Negotiation", title: "Negotiation" },
@@ -47,16 +49,16 @@ const [errors, setErrors] = useState({});
   // Get current user from Redux store
   const { user } = useSelector((state) => state.user);
 
-useEffect(() => {
+  useEffect(() => {
     if (deal) {
       setFormData({
         name: deal.name || "",
         contactId: deal.contactId || "",
         value: deal.value || "",
-        expectedCloseDate: deal.expectedCloseDate && isValid(new Date(deal.expectedCloseDate)) ? deal.expectedCloseDate.split('T')[0] : "",
+        expectedCloseDate: deal.expectedCloseDate ? deal.expectedCloseDate.split('T')[0] : "",
         stage: deal.stage || "Lead",
-        probability: deal.probability || 0,
-        description: deal.description || ""
+        probability: deal.probability || 25,
+description: deal.description || ""
       });
       setReminderData({
         enabled: false,
@@ -80,8 +82,8 @@ useEffect(() => {
         type: "Call",
         notes: ""
       });
-}
-    setErrors({});
+    }
+setErrors({});
     setNewComment('');
     setEditingCommentId(null);
     setEditingCommentText('');
@@ -211,9 +213,9 @@ useEffect(() => {
       return;
     }
 
-setIsSubmitting(true);
+    setIsSubmitting(true);
     
-    try {
+try {
       const selectedContact = contacts.find(c => c.Id === parseInt(formData.contactId));
       const dealData = {
         ...formData,
@@ -420,9 +422,10 @@ setIsSubmitting(true);
               onChange={handleChange}
               rows={3}
               className="block w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 shadow-sm transition-all duration-200 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
-placeholder="Additional details about this deal..."
+              placeholder="Additional details about this deal..."
             />
-          </div>
+</div>
+
           {/* Follow-up Reminder Section */}
           <div className="space-y-4 pt-4 border-t border-gray-200">
             <div className="flex items-center space-x-2">
@@ -475,11 +478,12 @@ placeholder="Additional details about this deal..."
                     onChange={(e) => setReminderData(prev => ({ ...prev, notes: e.target.value }))}
                     rows={2}
                     className="block w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 shadow-sm transition-all duration-200 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
-placeholder="Additional notes for the follow-up..."
+                    placeholder="Additional notes for the follow-up..."
                   />
                 </div>
               </div>
-            )}
+)}
+          </div>
 
           {/* Comments Section */}
           {deal && (

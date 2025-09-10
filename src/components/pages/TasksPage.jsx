@@ -1,17 +1,17 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import { toast } from "react-toastify";
-import { format, isValid } from "date-fns";
 import ApperIcon from "@/components/ApperIcon";
+import Button from "@/components/atoms/Button";
+import Badge from "@/components/atoms/Badge";
+import FormField from "@/components/molecules/FormField";
+import Loading from "@/components/ui/Loading";
 import Error from "@/components/ui/Error";
 import Empty from "@/components/ui/Empty";
-import Loading from "@/components/ui/Loading";
-import FormField from "@/components/molecules/FormField";
-import Badge from "@/components/atoms/Badge";
-import Button from "@/components/atoms/Button";
-import { createTask, deleteTask, getTasks, updateTask } from "@/services/api/taskService";
+import { getTasks, createTask, updateTask, deleteTask } from "@/services/api/taskService";
 import { cn } from "@/utils/cn";
+import { format } from "date-fns";
 
-function TasksPage() {
+const TasksPage = () => {
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -67,9 +67,8 @@ function TasksPage() {
     }
   };
 
-function getPriorityIcon(dueDate) {
-    if (!dueDate || !isValid(new Date(dueDate))) return { icon: 'Clock', color: 'text-gray-400' };
-    
+  const getPriorityIcon = (dueDate) => {
+    if (!dueDate) return null;
     const due = new Date(dueDate);
     const now = new Date();
     const daysDiff = Math.ceil((due - now) / (1000 * 60 * 60 * 24));
@@ -271,11 +270,11 @@ console.error("Error updating task status:", error?.response?.data?.message || e
                       <p className="text-gray-600 mb-3">{task.description}</p>
                     )}
                     
-<div className="flex items-center space-x-4 text-sm text-gray-500">
+                    <div className="flex items-center space-x-4 text-sm text-gray-500">
                       {task.dueDate && (
-                        <div className="flex items-center gap-1 text-xs text-gray-500">
-                          <ApperIcon name="Calendar" size={12} />
-                          <span>Due: {task.dueDate && isValid(new Date(task.dueDate)) ? format(new Date(task.dueDate), "MMM d, yyyy") : 'No date set'}</span>
+                        <div className="flex items-center space-x-1">
+                          <ApperIcon name="Calendar" size={14} />
+                          <span>Due: {format(new Date(task.dueDate), "MMM d, yyyy")}</span>
                         </div>
                       )}
                       {task.assignedToUserName && (

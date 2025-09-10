@@ -1,19 +1,19 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import { toast } from "react-toastify";
-import { format, isValid } from "date-fns";
 import ApperIcon from "@/components/ApperIcon";
+import Button from "@/components/atoms/Button";
+import Badge from "@/components/atoms/Badge";
+import FormField from "@/components/molecules/FormField";
+import Loading from "@/components/ui/Loading";
 import Error from "@/components/ui/Error";
 import Empty from "@/components/ui/Empty";
-import Loading from "@/components/ui/Loading";
-import FormField from "@/components/molecules/FormField";
-import Badge from "@/components/atoms/Badge";
-import Button from "@/components/atoms/Button";
-import { getDeals } from "@/services/api/dealService";
-import { createActivity, deleteActivity, getActivities, updateActivity } from "@/services/api/activityService";
+import { getActivities, createActivity, updateActivity, deleteActivity } from "@/services/api/activityService";
 import { getContacts } from "@/services/api/contactService";
+import { getDeals } from "@/services/api/dealService";
 import { cn } from "@/utils/cn";
+import { format } from "date-fns";
 
-const ACTIVITY_TYPES = ["Call", "Email", "Meeting", "Task"];
+const ACTIVITY_TYPES = ['Call', 'Email', 'Meeting', 'Task'];
 const ASSOCIATED_ITEM_TYPES = ['Contact', 'Deal'];
 
 const ActivitiesPage = () => {
@@ -90,12 +90,11 @@ const ActivitiesPage = () => {
     };
     return colorMap[activityType] || 'bg-gray-100 text-gray-800';
   };
-function getPriorityIcon(activityDate) {
-    if (!activityDate || !isValid(new Date(activityDate))) return { icon: 'Clock', color: 'text-gray-400' };
-    
+
+  const getPriorityIcon = (activityDate) => {
     const now = new Date();
     const activityDateObj = new Date(activityDate);
-    const diffHours = (activityDateObj.getTime() - now.getTime()) / (1000 * 60 * 60);
+    const diffHours = (activityDateObj - now) / (1000 * 60 * 60);
     
     if (diffHours < -24) return { icon: "AlertCircle", color: "text-red-500", title: "Overdue" };
     if (diffHours < 0) return { icon: "Clock", color: "text-orange-500", title: "Due today" };
@@ -117,14 +116,14 @@ function getPriorityIcon(activityDate) {
     setShowModal(true);
   };
 
-const handleEditActivity = (activity) => {
+  const handleEditActivity = (activity) => {
     setEditingActivity(activity);
     setFormData({
       name: activity.name || '',
       activityType: activity.activityType || '',
-      activityDate: activity.activityDate && isValid(new Date(activity.activityDate)) ? activity.activityDate.slice(0, 16) : '',
+      activityDate: activity.activityDate ? activity.activityDate.slice(0, 16) : '',
       associatedItemType: activity.associatedItemType || '',
-      associatedItemId: activity.associatedItemId || '',
+      associatedItemId: activity.associatedItemId?.toString() || '',
       notes: activity.notes || '',
       tags: activity.tags || ''
     });
@@ -310,13 +309,12 @@ const handleEditActivity = (activity) => {
                           <Badge className={getStatusColor(activity.activityType)}>
                             {activity.activityType}
                           </Badge>
-<div className="flex items-center gap-1 text-xs text-gray-500">
-                            <ApperIcon name="Calendar" size={12} />
-                            <span>
-                              {activity.activityDate && isValid(new Date(activity.activityDate)) ? format(new Date(activity.activityDate), 'MMM dd, yyyy HH:mm') : 'No date set'}
-                            </span>
+                          <div className="flex items-center gap-1 text-sm text-gray-500" title={priorityInfo.title}>
+                            <ApperIcon name={priorityInfo.icon} size={16} className={priorityInfo.color} />
+                            {activity.activityDate && format(new Date(activity.activityDate), 'MMM dd, yyyy HH:mm')}
                           </div>
                         </div>
+                        
                         <div className="grid md:grid-cols-2 gap-4 text-sm text-gray-600 mb-4">
                           <div>
                             <span className="font-medium">Associated with:</span>
@@ -348,14 +346,13 @@ const handleEditActivity = (activity) => {
                               <Badge key={index} variant="secondary" className="text-xs">
                                 {tag.trim()}
                               </Badge>
-))}
+                            ))}
                           </div>
+                        )}
                         
-                        <div className="flex items-center gap-2 text-xs text-gray-500 mt-2">
-                          <ApperIcon name="Clock" size={12} />
-                          <span>
-                            Created {activity.createdOn && isValid(new Date(activity.createdOn)) ? format(new Date(activity.createdOn), 'MMM dd, yyyy') : 'Unknown date'}
-                          </span>
+                        <div className="text-xs text-gray-500">
+                          Created {activity.createdOn && format(new Date(activity.createdOn), 'MMM dd, yyyy')}
+                          {activity.createdBy && ` by ${activity.createdBy}`}
                         </div>
                       </div>
                       

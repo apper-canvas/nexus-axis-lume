@@ -1,12 +1,12 @@
-import React, { useMemo, useState } from "react";
-import { format, isValid } from "date-fns";
+import React, { useState, useMemo } from "react";
 import ApperIcon from "@/components/ApperIcon";
-import SearchBar from "@/components/molecules/SearchBar";
-import Badge from "@/components/atoms/Badge";
 import Button from "@/components/atoms/Button";
+import Badge from "@/components/atoms/Badge";
+import SearchBar from "@/components/molecules/SearchBar";
 import { cn } from "@/utils/cn";
+import { format } from "date-fns";
 
-const QuoteList = ({
+const QuoteList = ({ 
   quotes, 
   onAddQuote, 
   onEditQuote, 
@@ -36,13 +36,14 @@ const QuoteList = ({
         case "status":
           aValue = a.status.toLowerCase();
           bValue = b.status.toLowerCase();
-case 'validUntil':
-          aValue = (a.validUntil && isValid(new Date(a.validUntil))) ? new Date(a.validUntil) : new Date(0);
-          bValue = (b.validUntil && isValid(new Date(b.validUntil))) ? new Date(b.validUntil) : new Date(0);
           break;
-        case 'createdAt':
-          aValue = (a.createdAt && isValid(new Date(a.createdAt))) ? new Date(a.createdAt) : new Date(0);
-          bValue = (b.createdAt && isValid(new Date(b.createdAt))) ? new Date(b.createdAt) : new Date(0);
+        case "validUntil":
+          aValue = new Date(a.validUntil || 0);
+          bValue = new Date(b.validUntil || 0);
+          break;
+        case "created":
+          aValue = new Date(a.createdAt);
+          bValue = new Date(b.createdAt);
           break;
         default:
           return 0;
@@ -164,15 +165,15 @@ case 'validUntil':
                   GST
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-Items
+                  Items
                 </th>
                 <th
                   className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors"
-                  onClick={() => handleSort("createdAt")}
+                  onClick={() => handleSort("created")}
                 >
                   <div className="flex items-center space-x-1">
                     <span>Created</span>
-                    <ApperIcon name={getSortIcon("createdAt")} size={14} />
+                    <ApperIcon name={getSortIcon("created")} size={14} />
                   </div>
                 </th>
                 <th className="relative px-6 py-3">
@@ -203,38 +204,32 @@ Items
                       </div>
                     </div>
                   </td>
-<td className="px-6 py-4 whitespace-nowrap">
+                  <td className="px-6 py-4 whitespace-nowrap">
                     <div className="text-sm font-semibold text-gray-900">
-                      {formatCurrency(quote.amount || 0)}
+{formatCurrency(quote.amount)}
                     </div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
+<td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    {quote.discount ? `${quote.discount}%` : '-'}
+                  </td>
+<td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    {quote.gst ? `${quote.gst}%` : '-'}
+                  </td>
+<td className="px-6 py-4 whitespace-nowrap">
                     <Badge variant={getStatusVariant(quote.status)}>
                       {quote.status}
                     </Badge>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    <div className="flex items-center gap-2">
-                      <ApperIcon name="Calendar" size={14} />
-                      {quote.validUntil && isValid(new Date(quote.validUntil)) ? format(new Date(quote.validUntil), "MMM d, yyyy") : 'No date'}
-                    </div>
+<td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    {quote.validUntil ? format(new Date(quote.validUntil), "MMM d, yyyy") : 'No date'}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {quote.discount ? `${quote.discount}%` : '-'}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {quote.gst ? `${quote.gst}%` : '-'}
+<td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    {quote.customerName || 'No customer'}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {quote.items?.length || 0} items
+                    {format(new Date(quote.createdAt), "MMM d, yyyy")}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    <div className="flex items-center gap-2">
-                      <ApperIcon name="Clock" size={14} />
-                      {quote.createdAt && isValid(new Date(quote.createdAt)) ? format(new Date(quote.createdAt), "MMM d, yyyy") : 'No date'}
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                  <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                     <div className="flex items-center justify-end space-x-2">
                       <Button
                         variant="ghost"

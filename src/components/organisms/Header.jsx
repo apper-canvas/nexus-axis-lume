@@ -22,15 +22,15 @@ const Header = ({ onMenuClick, user, onLogout, ...props }) => {
             <Button variant="ghost" size="sm">
               <ApperIcon name="Bell" size={20} />
             </Button>
-            {props.user && (
+{user && (
               <div className="flex items-center space-x-3">
                 <span className="text-sm text-gray-700">
-                  {props.user.firstName} {props.user.lastName}
+                  {user.firstName} {user.lastName}
                 </span>
                 <div className="h-8 w-8 rounded-full bg-gradient-to-br from-primary-400 to-primary-600 flex items-center justify-center text-white text-sm font-semibold">
-                  {(props.user.firstName || 'U').charAt(0).toUpperCase()}
+                  {(user.firstName || 'U').charAt(0).toUpperCase()}
                 </div>
-                <Button variant="outline" size="sm" onClick={props.onLogout}>
+                <Button variant="outline" size="sm" onClick={onLogout}>
                   Logout
                 </Button>
               </div>

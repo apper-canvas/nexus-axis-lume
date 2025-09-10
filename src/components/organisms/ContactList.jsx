@@ -1,13 +1,18 @@
-import React, { useMemo, useState } from "react";
-import { format, isValid } from "date-fns";
+import React, { useState, useMemo } from "react";
 import ApperIcon from "@/components/ApperIcon";
-import StatusFilter from "@/components/molecules/StatusFilter";
-import SearchBar from "@/components/molecules/SearchBar";
-import Badge from "@/components/atoms/Badge";
 import Button from "@/components/atoms/Button";
+import Badge from "@/components/atoms/Badge";
+import SearchBar from "@/components/molecules/SearchBar";
+import StatusFilter from "@/components/molecules/StatusFilter";
 import { cn } from "@/utils/cn";
+import { format } from "date-fns";
 
-function ContactList({ contacts, onAddContact, onEditContact, onDeleteContact }) {
+const ContactList = ({ 
+  contacts, 
+  onAddContact, 
+  onEditContact, 
+  onDeleteContact 
+}) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [sortBy, setSortBy] = useState("name");
@@ -44,19 +49,16 @@ function ContactList({ contacts, onAddContact, onEditContact, onDeleteContact })
           aValue = a.email.toLowerCase();
           bValue = b.email.toLowerCase();
           break;
-case "company":
-          aValue = (a.company || '').toLowerCase();
-          bValue = (b.company || '').toLowerCase();
+        case "company":
+          aValue = a.company.toLowerCase();
+bValue = (b.company || '').toLowerCase();
           break;
-        case 'createdAt':
-        case 'created_at_c':
-          aValue = (a.createdAt && isValid(new Date(a.createdAt))) ? new Date(a.createdAt) : new Date(0);
-          bValue = (b.createdAt && isValid(new Date(b.createdAt))) ? new Date(b.createdAt) : new Date(0);
+        case "created":
+          aValue = new Date(a.createdAt);
+          bValue = new Date(b.createdAt);
           break;
         default:
-          aValue = (a[sortBy] || '').toString().toLowerCase();
-          bValue = (b[sortBy] || '').toString().toLowerCase();
-          break;
+          return 0;
       }
 
       if (aValue < bValue) return sortOrder === "asc" ? -1 : 1;
@@ -157,13 +159,13 @@ case "company":
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Status
                 </th>
-<th
+                <th
                   className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors"
-                  onClick={() => handleSort("createdAt")}
+                  onClick={() => handleSort("created")}
                 >
                   <div className="flex items-center space-x-1">
                     <span>Created</span>
-                    <ApperIcon name={getSortIcon("createdAt")} size={14} />
+                    <ApperIcon name={getSortIcon("created")} size={14} />
                   </div>
                 </th>
                 <th className="relative px-6 py-3">
@@ -179,37 +181,34 @@ case "company":
                 >
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center">
-<div className="h-10 w-10 rounded-full bg-gradient-to-br from-primary-400 to-primary-600 flex items-center justify-center text-white font-semibold">
-                        {contact.firstName?.charAt(0) || ''}{contact.lastName?.charAt(0) || ''}
+                      <div className="h-10 w-10 rounded-full bg-gradient-to-br from-primary-400 to-primary-600 flex items-center justify-center text-white font-semibold">
+                        {contact.firstName.charAt(0)}{contact.lastName.charAt(0)}
                       </div>
                       <div className="ml-4">
                         <div className="text-sm font-medium text-gray-900">
-                          {contact.firstName || ''} {contact.lastName || ''}
+                          {contact.firstName} {contact.lastName}
                         </div>
                       </div>
                     </div>
                   </td>
-<td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-900">{contact.email || ''}</div>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm text-gray-900">{contact.email}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-900">{contact.phone || 'No phone'}</div>
+                    <div className="text-sm text-gray-900">{contact.phone}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
 <div className="text-sm text-gray-900">{contact.company || 'No Company'}</div>
                   </td>
-<td className="px-6 py-4 whitespace-nowrap">
+                  <td className="px-6 py-4 whitespace-nowrap">
                     <Badge variant={getStatusVariant(contact.status)}>
                       {contact.status}
                     </Badge>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    <div className="flex items-center gap-2">
-                      <ApperIcon name="Clock" size={14} />
-                      {contact.createdAt && isValid(new Date(contact.createdAt)) ? format(new Date(contact.createdAt), "MMM d, yyyy") : 'No date'}
-                    </div>
+                    {format(new Date(contact.createdAt), "MMM d, yyyy")}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
+                  <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                     <div className="flex items-center justify-end space-x-2">
                       <Button
                         variant="ghost"

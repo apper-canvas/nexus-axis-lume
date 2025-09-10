@@ -1,4 +1,5 @@
 import { createContext, useEffect, useState } from 'react';
+import EmailTrackingPage from '@/components/pages/EmailTrackingPage';
 import { BrowserRouter, Routes, Route, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { ToastContainer } from "react-toastify";
@@ -163,6 +164,7 @@ function AppContent() {
                       <Route path="/analytics" element={<AnalyticsPage />} />
 <Route path="/quotes" element={<QuotePage />} />
                       <Route path="/purchase-orders" element={<PurchaseOrderPage />} />
+                      <Route path="/email-tracking" element={<EmailTrackingPage />} />
                       <Route path="/settings" element={<SettingsPage />} />
                     </Routes>
                   </div>

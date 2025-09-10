@@ -1,18 +1,18 @@
-import React, { useMemo, useState } from "react";
-import { format, isValid } from "date-fns";
+import React, { useState, useMemo } from "react";
 import ApperIcon from "@/components/ApperIcon";
-import StatusFilter from "@/components/molecules/StatusFilter";
-import SearchBar from "@/components/molecules/SearchBar";
-import Badge from "@/components/atoms/Badge";
 import Button from "@/components/atoms/Button";
+import Badge from "@/components/atoms/Badge";
+import SearchBar from "@/components/molecules/SearchBar";
+import StatusFilter from "@/components/molecules/StatusFilter";
 import { cn } from "@/utils/cn";
+import { format } from "date-fns";
 
-function PurchaseOrderList({ 
+const PurchaseOrderList = ({ 
   purchaseOrders, 
   onAddPurchaseOrder, 
   onEditPurchaseOrder, 
   onDeletePurchaseOrder 
-}) {
+}) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [sortBy, setSortBy] = useState("name");
@@ -57,8 +57,8 @@ switch (sortBy) {
           bValue = b.vendor_c?.Name?.toLowerCase() || "";
           break;
         case "orderDate":
-          aValue = (a.order_date_c && isValid(new Date(a.order_date_c))) ? new Date(a.order_date_c) : new Date(0);
-          bValue = (b.order_date_c && isValid(new Date(b.order_date_c))) ? new Date(b.order_date_c) : new Date(0);
+          aValue = new Date(a.order_date_c || 0);
+          bValue = new Date(b.order_date_c || 0);
           break;
         case "totalValue":
           aValue = a.total_value_c || 0;
@@ -214,15 +214,13 @@ switch (sortBy) {
                   <td className="px-6 py-4 whitespace-nowrap">
 <div className="text-sm text-gray-900">{purchaseOrder.vendor_c?.Name || 'No Vendor'}</div>
                   </td>
-<td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    <div className="flex items-center gap-2">
-                      <ApperIcon name="Calendar" size={14} />
-                      {purchaseOrder.order_date_c && isValid(new Date(purchaseOrder.order_date_c)) ? format(new Date(purchaseOrder.order_date_c), "MMM d, yyyy") : 'No Date'}
-</div>
+                  <td className="px-6 py-4 whitespace-nowrap">
+<div className="text-sm text-gray-900">
+                      {purchaseOrder.order_date_c ? format(new Date(purchaseOrder.order_date_c), "MMM d, yyyy") : 'No Date'}
+                    </div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    <div className="flex items-center gap-2">
-                      <ApperIcon name="DollarSign" size={14} />
+                  <td className="px-6 py-4 whitespace-nowrap">
+<div className="text-sm font-medium text-gray-900">
                       {formatCurrency(purchaseOrder.total_value_c)}
                     </div>
                   </td>
