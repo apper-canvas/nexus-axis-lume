@@ -19,11 +19,11 @@ const PurchaseOrderList = ({
   const [sortOrder, setSortOrder] = useState("asc");
 
   const statusOptions = [
-    { value: "all", label: "All Status", count: purchaseOrders.length },
-    { value: "Draft", label: "Draft", count: purchaseOrders.filter(po => po.status === "Draft").length },
-    { value: "Ordered", label: "Ordered", count: purchaseOrders.filter(po => po.status === "Ordered").length },
-    { value: "Received", label: "Received", count: purchaseOrders.filter(po => po.status === "Received").length },
-    { value: "Cancelled", label: "Cancelled", count: purchaseOrders.filter(po => po.status === "Cancelled").length }
+{ value: "all", label: "All Status", count: purchaseOrders.length },
+    { value: "Draft", label: "Draft", count: purchaseOrders.filter(po => po.status_c === "Draft").length },
+    { value: "Ordered", label: "Ordered", count: purchaseOrders.filter(po => po.status_c === "Ordered").length },
+    { value: "Received", label: "Received", count: purchaseOrders.filter(po => po.status_c === "Received").length },
+    { value: "Cancelled", label: "Cancelled", count: purchaseOrders.filter(po => po.status_c === "Cancelled").length }
   ];
 
   const filteredAndSortedPurchaseOrders = useMemo(() => {
@@ -31,42 +31,42 @@ const PurchaseOrderList = ({
 
     // Filter by search term
     if (searchTerm) {
-      filtered = filtered.filter(po =>
-        po.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        po.vendor.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        po.contact.toLowerCase().includes(searchTerm.toLowerCase())
+filtered = filtered.filter(po =>
+        po.name_c?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        po.vendor_c?.Name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        po.contact_id_c?.Name?.toLowerCase().includes(searchTerm.toLowerCase())
       );
     }
 
     // Filter by status
-    if (statusFilter !== "all") {
-      filtered = filtered.filter(po => po.status === statusFilter);
+if (statusFilter !== "all") {
+      filtered = filtered.filter(po => po.status_c === statusFilter);
     }
 
     // Sort purchase orders
     filtered.sort((a, b) => {
       let aValue, bValue;
       
-      switch (sortBy) {
+switch (sortBy) {
         case "name":
-          aValue = a.name.toLowerCase();
-          bValue = b.name.toLowerCase();
+          aValue = a.name_c?.toLowerCase() || "";
+          bValue = b.name_c?.toLowerCase() || "";
           break;
         case "vendor":
-          aValue = a.vendor.toLowerCase();
-          bValue = b.vendor.toLowerCase();
+          aValue = a.vendor_c?.Name?.toLowerCase() || "";
+          bValue = b.vendor_c?.Name?.toLowerCase() || "";
           break;
         case "orderDate":
-          aValue = new Date(a.orderDate);
-          bValue = new Date(b.orderDate);
+          aValue = new Date(a.order_date_c || 0);
+          bValue = new Date(b.order_date_c || 0);
           break;
         case "totalValue":
-          aValue = a.totalValue;
-          bValue = b.totalValue;
+          aValue = a.total_value_c || 0;
+          bValue = b.total_value_c || 0;
           break;
         case "created":
-          aValue = new Date(a.createdAt);
-          bValue = new Date(b.createdAt);
+          aValue = new Date(a.CreatedOn || 0);
+          bValue = new Date(b.CreatedOn || 0);
           break;
         default:
           return 0;
@@ -205,32 +205,32 @@ const PurchaseOrderList = ({
                         <ApperIcon name="ShoppingCart" size={16} />
                       </div>
                       <div className="ml-4">
-                        <div className="text-sm font-medium text-gray-900">
-                          {purchaseOrder.name}
+<div className="text-sm font-medium text-gray-900">
+                          {purchaseOrder.name_c}
                         </div>
                       </div>
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-900">{purchaseOrder.vendor || 'No Vendor'}</div>
+<div className="text-sm text-gray-900">{purchaseOrder.vendor_c?.Name || 'No Vendor'}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-900">
-                      {purchaseOrder.orderDate ? format(new Date(purchaseOrder.orderDate), "MMM d, yyyy") : 'No Date'}
+<div className="text-sm text-gray-900">
+                      {purchaseOrder.order_date_c ? format(new Date(purchaseOrder.order_date_c), "MMM d, yyyy") : 'No Date'}
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm font-medium text-gray-900">
-                      {formatCurrency(purchaseOrder.totalValue)}
+<div className="text-sm font-medium text-gray-900">
+                      {formatCurrency(purchaseOrder.total_value_c)}
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <Badge variant={getStatusVariant(purchaseOrder.status)}>
-                      {purchaseOrder.status}
+<Badge variant={getStatusVariant(purchaseOrder.status_c)}>
+                      {purchaseOrder.status_c}
                     </Badge>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm text-gray-900">{purchaseOrder.contact || 'No Contact'}</div>
+<div className="text-sm text-gray-900">{purchaseOrder.contact_id_c?.Name || 'No Contact'}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                     <div className="flex items-center justify-end space-x-2">

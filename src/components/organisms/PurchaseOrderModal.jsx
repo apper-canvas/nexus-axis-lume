@@ -14,41 +14,41 @@ const PurchaseOrderModal = ({
   companies = [], 
   contacts = [] 
 }) => {
-  const [formData, setFormData] = useState({
-    name: "",
-    vendorId: "",
-    orderDate: "",
-    totalValue: "",
-    status: "Draft",
-    contactId: ""
+const [formData, setFormData] = useState({
+    name_c: "",
+    vendor_c: "",
+    order_date_c: "",
+    total_value_c: "",
+    status_c: "Draft",
+    contact_id_c: ""
   });
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
 if (purchaseOrder) {
       setFormData({
-        name: purchaseOrder.name || "",
-        vendorId: purchaseOrder.vendorId || "",
-        orderDate: purchaseOrder.orderDate || "",
-        totalValue: purchaseOrder.totalValue || "",
-        status: purchaseOrder.status || "Draft",
-        contactId: purchaseOrder.contactId || ""
+        name_c: purchaseOrder.name_c || "",
+        vendor_c: purchaseOrder.vendor_c?.Id || purchaseOrder.vendor_c || "",
+        order_date_c: purchaseOrder.order_date_c || "",
+        total_value_c: purchaseOrder.total_value_c || "",
+        status_c: purchaseOrder.status_c || "Draft",
+        contact_id_c: purchaseOrder.contact_id_c?.Id || purchaseOrder.contact_id_c || ""
       });
     } else {
       setFormData({
-name: "",
-        vendorId: "",
-        orderDate: "",
-        totalValue: "",
-        status: "Draft",
-        contactId: ""
+        name_c: "",
+        vendor_c: "",
+        order_date_c: "",
+        total_value_c: "",
+        status_c: "Draft",
+        contact_id_c: ""
       });
     }
   }, [purchaseOrder, isOpen]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!formData.name.trim()) {
+if (!formData.name_c.trim()) {
       return;
     }
 
@@ -94,28 +94,28 @@ setLoading(true);
           <FormField
             label="Name"
             required
-            error={!formData.name.trim() ? "Name is required" : ""}
+error={!formData.name_c.trim() ? "Name is required" : ""}
           >
             <Input
-              value={formData.name}
-              onChange={(e) => handleChange("name", e.target.value)}
+              value={formData.name_c}
+              onChange={(e) => handleChange("name_c", e.target.value)}
               placeholder="Enter purchase order name"
               className={cn(
-                !formData.name.trim() && "border-error-500 focus:border-error-500 focus:ring-error-500"
+                !formData.name_c.trim() && "border-error-500 focus:border-error-500 focus:ring-error-500"
               )}
             />
           </FormField>
 
           <FormField label="Vendor">
             <select
-              value={formData.vendorId}
-              onChange={(e) => handleChange("vendorId", e.target.value)}
+value={formData.vendor_c}
+              onChange={(e) => handleChange("vendor_c", e.target.value)}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
             >
               <option value="">Select a vendor</option>
               {companies.map((company) => (
-                <option key={company.Id} value={company.Id}>
-                  {company.name}
+<option key={company.Id} value={company.Id}>
+                  {company.name_c || company.Name}
                 </option>
               ))}
             </select>
@@ -124,8 +124,8 @@ setLoading(true);
           <FormField label="Order Date">
             <Input
               type="date"
-              value={formData.orderDate}
-              onChange={(e) => handleChange("orderDate", e.target.value)}
+value={formData.order_date_c}
+              onChange={(e) => handleChange("order_date_c", e.target.value)}
             />
           </FormField>
 
@@ -134,16 +134,16 @@ setLoading(true);
               type="number"
               step="0.01"
               min="0"
-              value={formData.totalValue}
-              onChange={(e) => handleChange("totalValue", e.target.value)}
+value={formData.total_value_c}
+              onChange={(e) => handleChange("total_value_c", e.target.value)}
               placeholder="0.00"
             />
           </FormField>
 
           <FormField label="Status">
             <select
-              value={formData.status}
-              onChange={(e) => handleChange("status", e.target.value)}
+value={formData.status_c}
+              onChange={(e) => handleChange("status_c", e.target.value)}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
             >
               <option value="Draft">Draft</option>
@@ -155,14 +155,14 @@ setLoading(true);
 
           <FormField label="Contact">
             <select
-              value={formData.contactId}
-              onChange={(e) => handleChange("contactId", e.target.value)}
+value={formData.contact_id_c}
+              onChange={(e) => handleChange("contact_id_c", e.target.value)}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
             >
               <option value="">Select a contact</option>
               {contacts.map((contact) => (
-                <option key={contact.Id} value={contact.Id}>
-                  {contact.firstName} {contact.lastName}
+<option key={contact.Id} value={contact.Id}>
+                  {contact.first_name_c} {contact.last_name_c}
                 </option>
               ))}
             </select>
@@ -180,7 +180,7 @@ setLoading(true);
             <Button
               type="submit"
               variant="primary"
-              disabled={loading || !formData.name.trim()}
+disabled={loading || !formData.name_c.trim()}
             >
               {loading ? (
                 <div className="flex items-center">
