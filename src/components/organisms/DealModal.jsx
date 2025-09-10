@@ -9,7 +9,6 @@ import { createDeal, updateDeal } from "@/services/api/dealService";
 import { createComment, deleteComment, getComments, updateComment } from "@/services/api/commentService";
 import { createFollowUpReminder } from "@/services/api/followUpReminderService";
 import { cn } from "@/utils/cn";
-
 const PIPELINE_STAGES = [
   { id: "Qualified", title: "Qualified" },
   { id: "Proposal", title: "Proposal" },
@@ -476,9 +475,8 @@ placeholder="Additional details about this deal..."
                     onChange={(e) => setReminderData(prev => ({ ...prev, notes: e.target.value }))}
                     rows={2}
                     className="block w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 shadow-sm transition-all duration-200 focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
-                    placeholder="Additional notes for the follow-up..."
+placeholder="Additional notes for the follow-up..."
                   />
-/>
                 </div>
               </div>
             )}

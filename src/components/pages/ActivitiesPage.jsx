@@ -348,9 +348,10 @@ const handleEditActivity = (activity) => {
                               <Badge key={index} variant="secondary" className="text-xs">
                                 {tag.trim()}
                               </Badge>
-                            ))}
+))}
                           </div>
-<div className="flex items-center gap-2 text-xs text-gray-500 mt-2">
+                        
+                        <div className="flex items-center gap-2 text-xs text-gray-500 mt-2">
                           <ApperIcon name="Clock" size={12} />
                           <span>
                             Created {activity.createdOn && isValid(new Date(activity.createdOn)) ? format(new Date(activity.createdOn), 'MMM dd, yyyy') : 'Unknown date'}
