@@ -88,7 +88,7 @@ const PurchaseOrderPage = () => {
           )
         );
 toast.success("Purchase order updated successfully!");
-      } else {
+} else {
         savedPurchaseOrder = await createPurchaseOrder(formData);
         setPurchaseOrders(prev => [...prev, savedPurchaseOrder]);
         toast.success("Purchase order created successfully!");
@@ -96,7 +96,7 @@ toast.success("Purchase order updated successfully!");
     } catch (err) {
       toast.error("Failed to save purchase order. Please try again.");
       console.error("Error saving purchase order:", err);
-      return;
+      throw err;
     }
   };
 
